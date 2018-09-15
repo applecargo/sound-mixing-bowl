@@ -183,7 +183,7 @@ $(document).ready(function() {
       if (curscreen == 2) {
         anext._deactivate();
       }
-      if (curscreen == 7) {
+      if (curscreen == nscreen) {
         anext._deactivate();
       }
     }
