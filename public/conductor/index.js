@@ -257,9 +257,9 @@ $(document).ready(function() {
 
     //page change - prev. page
     aprev.addTo(project);
-    aprev.scale(vsw / 4);
+    aprev.scale(vssw * 1.5);
     aprev.position = [0, 0]; //reset position, before relative positioning !!
-    aprev.translate([vssw, vssw * 2.5]);
+    aprev.translate([vssw, vssw * 1.8]);
     aprev.fillColor = 'pink';
     aprev._socket = socket;
     aprev._isactive = false;
@@ -279,9 +279,9 @@ $(document).ready(function() {
 
     //page change - next. page
     anext.addTo(project);
-    anext.scale(vsw / 4);
+    anext.scale(vssw * 1.5);
     anext.position = [0, 0]; //reset position, before relative positioning !!
-    anext.translate([vssw * 9, vssw * 2.5]);
+    anext.translate([vssw * 9, vssw * 1.8]);
     anext.fillColor = 'pink';
     anext._socket = socket;
     anext._isactive = false;
@@ -301,8 +301,8 @@ $(document).ready(function() {
 
     //title background
     new Path.Rectangle({
-      point: [vssw * 2, vssw * 1.5],
-      size: [vssw * 6, vssw * 2],
+      point: [vssw * 2, vssw * 1],
+      size: [vssw * 6, vssw * 1.5],
       fillColor: 'white',
       radius: 30,
     }).opacity = 0.3;
@@ -328,10 +328,10 @@ $(document).ready(function() {
       for (var col = 0; col < 2; col++) {
         var idx = row * 2 + col;
         var c = new Path.Circle({
-          center: [col * vssw * 3 + vssw * 3, row * vssw * 3 + vssw * 6],
-          radius: vssw * 0.8,
+          center: [col * vssw * 3.5 + vssw * 2.5, row * vssw * 3.5 + vssw * 4 + vssw * 2.5],
+          radius: vssw * 1,
           fillColor: new Color({
-            hue: getRandom(0, 180),
+            hue: getRandom(30, 180),
             saturation: 1,
             brightness: 1
           }),
@@ -346,7 +346,7 @@ $(document).ready(function() {
         new PointText({
           point: c.bounds.topLeft + [0, -5],
           content: group_names[idx],
-          fontSize: '1em',
+          fontSize: '2em',
           fontWeight: 'bold',
           fillColor: c.fillColor
         });
@@ -406,7 +406,7 @@ $(document).ready(function() {
             center: [col * vssw * 2.5 + vssw * 2, row * vssw * 2.3 + vssw * 5.5],
             radius: vssw * 0.8,
             fillColor: new Color({
-              hue: getRandom(0, 180),
+              hue: getRandom(20, 60),
               saturation: 1,
               brightness: 1
             }),
@@ -471,7 +471,7 @@ $(document).ready(function() {
         new PointText({
           point: c.firstChild.bounds.topLeft + [0, -5],
           content: btn_names[idx],
-          fontSize: '2em',
+          fontSize: '1.5em',
           fontWeight: 'bold',
           fillColor: c.firstChild.fillColor
         });
@@ -669,9 +669,9 @@ $(document).ready(function() {
           children: [
             //play button
             new Path.Rectangle({
-              point: [vssw * 0.8, row * vssw * 1.5 + vssw * 4.5],
+              point: [vssw * 0.8, row * vssw * 1.4 + vssw * 3.5],
               radius: vssw * 0.4,
-              size: [vssw * 1.6, vssw * 0.8],
+              size: [vssw * 1.6, vssw * 0.7],
               fillColor: new Color({
                 hue: getRandom(20, 60),
                 saturation: 1,
@@ -692,9 +692,9 @@ $(document).ready(function() {
             }),
             //stop button
             new Path.Rectangle({
-              point: [vssw * 2.8, row * vssw * 1.5 + vssw * 4.5],
+              point: [vssw * 2.8, row * vssw * 1.4 + vssw * 3.5],
               radius: vssw * 0.4,
-              size: [vssw * 1.6, vssw * 0.8],
+              size: [vssw * 1.6, vssw * 0.7],
               fillColor: new Color({
                 hue: getRandom(120, 250),
                 saturation: 1,
@@ -719,16 +719,16 @@ $(document).ready(function() {
             new PointText({
               name: 'playcounter',
               content: '' + 0,
-              point: [vssw * 4.8, row * vssw * 1.5 + vssw * 4.5 + vssw * 0.7],
+              point: [vssw * 4.8, row * vssw * 1.4 + vssw * 3.5 + vssw * 0.6],
               fillColor: 'white',
               fontSize: '2em',
               fontWeight: 'bold'
             }),
             //faster button
             new Path.Rectangle({
-              point: [vssw * 5.8, row * vssw * 1.5 + vssw * 4.5],
+              point: [vssw * 5.8, row * vssw * 1.4 + vssw * 3.5],
               radius: vssw * 0.4,
-              size: [vssw * 1.6, vssw * 0.8],
+              size: [vssw * 1.6, vssw * 0.7],
               fillColor: new Color({
                 hue: getRandom(20, 60),
                 saturation: 1,
@@ -749,9 +749,9 @@ $(document).ready(function() {
             }),
             //slower button
             new Path.Rectangle({
-              point: [vssw * 7.8, row * vssw * 1.5 + vssw * 4.5],
+              point: [vssw * 7.8, row * vssw * 1.4 + vssw * 3.5],
               radius: vssw * 0.4,
-              size: [vssw * 1.6, vssw * 0.8],
+              size: [vssw * 1.6, vssw * 0.7],
               fillColor: new Color({
                 hue: getRandom(120, 250),
                 saturation: 1,
