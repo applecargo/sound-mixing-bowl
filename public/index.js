@@ -73,10 +73,10 @@ $(document).ready(function() {
     var clap = imports[7];
     //groups
     var group_names = [
-      '너',
-      '곰곰',
-      '레나',
-      '은솔',
+      '블루',
+      '소담이담',
+      '상남이네',
+      '양냥',
     ];
     var group_keys = [
       'grp1',
