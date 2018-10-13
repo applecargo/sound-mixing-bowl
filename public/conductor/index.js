@@ -24,41 +24,22 @@ $(document).ready(function() {
     SVGImport_size1('./imgs/iconmonstr-minus-4.svg'),
     //clap
     AudioImport_p5("./audio/clap@2/" + ("0" + getRandomInt(1, 2)).slice(-2) + ".mp3"),
-    //btn_sounds ==> 9
-    AudioImport_p5("./audio/bridgeA/고향돌리도.mp3"),
-    AudioImport_p5("./audio/bridgeA/동물소리흉내.mp3"),
-    // AudioImport_p5("./audio/bridgeA/동물소리흉내02.mp3"),
-    AudioImport_p5("./audio/bridgeA/동물소리흉내03.mp3"),
-    AudioImport_p5("./audio/bridgeA/모래야돌아와.mp3"),
-    AudioImport_p5("./audio/bridgeA/물소리가있었다.mp3"),
-    AudioImport_p5("./audio/bridgeA/우와.mp3"),
-    AudioImport_p5("./audio/bridgeA/이거물에넣고해도되요.mp3"),
-    AudioImport_p5("./audio/bridgeA/흰수마자돌아와.mp3"),
-    AudioImport_p5("./audio/bridgeA/흰수마자어디갔니.mp3"),
-    //set_sounds ==> 8
-    AudioImport_p5("./audio/path/가을아침.mp3"),
-    AudioImport_p5("./audio/path/내나이.mp3"),
-    AudioImport_p5("./audio/path/노래.mp3"),
-    AudioImport_p5("./audio/path/사랑을했따.mp3"),
-    AudioImport_p5("./audio/path/아아아아.mp3"),
-    AudioImport_p5("./audio/path/하모니카.mp3"),
-    AudioImport_p5("./audio/path/합주.mp3"),
-    AudioImport_p5("./audio/path/휘파람.mp3"),
-    //beach_sounds ==> 8
+    //beach_sounds page 1 ==> 7
     AudioImport("./audio/beach/두드리는01.mp3"),
     AudioImport("./audio/beach/두드리는02.mp3"),
-    // AudioImport("./audio/beach/두드리는03.mp3"),
-    // AudioImport("./audio/beach/두드리는04.mp3"),
     AudioImport("./audio/beach/두드리는06.mp3"),
-    // AudioImport("./audio/beach/모래걸음.mp3"),
     AudioImport("./audio/beach/물소리.mp3"),
     AudioImport("./audio/beach/물장구.mp3"),
     AudioImport("./audio/beach/손장구.mp3"),
     AudioImport("./audio/beach/운더강강술래.mp3"),
-    // AudioImport("./audio/beach/웃음.mp3"),
-    AudioImport("./audio/beach/젖은모래쓸어내기.mp3"),
-    // AudioImport("./audio/beach/천막긁는.mp3"),
-    // AudioImport("./audio/beach/풍덩.mp3"),
+    //beach_sounds page 2 ==> 7
+    AudioImport("./audio/beach/두드리는01.mp3"),
+    AudioImport("./audio/beach/두드리는02.mp3"),
+    AudioImport("./audio/beach/두드리는06.mp3"),
+    AudioImport("./audio/beach/물소리.mp3"),
+    AudioImport("./audio/beach/물장구.mp3"),
+    AudioImport("./audio/beach/손장구.mp3"),
+    AudioImport("./audio/beach/운더강강술래.mp3"),
     //
   ]).then(function(imports) {
     //imgs
@@ -71,64 +52,25 @@ $(document).ready(function() {
     var minus = imports[6];
     //clap
     var clap = imports[7];
-    //groups
-    var group_names = [
-      '블루',
-      '소담이담',
-      '상남이네',
-      '양냥',
-    ];
-    var group_keys = [
-      'grp1',
-      'grp2',
-      'grp3',
-      'grp4',
-    ];
-    //buttons
-    var btn_names = [
-      '고향',
-      '동물1',
-      '동물2',
-      '모래',
-      '물소리',
-      '우와',
-      '이거',
-      '돌아와',
-      '어디'
-    ];
-    var btn_sounds = [
-      imports[8],
-      imports[9],
-      imports[10],
-      imports[11],
-      imports[12],
-      imports[13],
-      imports[14],
-      imports[15],
-      imports[16],
-    ];
-    //set list
-    var set_sounds = {
-      '가을아침': imports[17],
-      '내나이': imports[18],
-      '노래': imports[19],
-      '사랑': imports[20],
-      '아아': imports[21],
-      '하모니카': imports[22],
-      '합주': imports[23],
-      '휘파람': imports[24]
-    };
     //beach list
+    //NOTE: beware! same key is not allowed!! every keys should have different name!!
     var beach_sounds = {
-      '두드림1': imports[25],
-      '두드림2': imports[26],
-      '두드림6': imports[27],
-      '물소리': imports[28],
-      '물장구': imports[29],
-      '손장구': imports[30],
-      '강강': imports[31],
-      '모래': imports[32]
+      '두드림1': imports[8],
+      '두드림2': imports[9],
+      '두드림6': imports[10],
+      '물소리': imports[11],
+      '물장구': imports[12],
+      '손장구': imports[13],
+      '강강': imports[14],
+      '두드림11': imports[15],
+      '두드림21': imports[16],
+      '두드림61': imports[17],
+      '물소리1': imports[18],
+      '물장구1': imports[19],
+      '손장구1': imports[20],
+      '강강1': imports[21],
     };
+    //NOTE: beware! same key is not allowed!! every keys should have different name!!
     var beach_players = {
       '두드림1': [],
       '두드림2': [],
@@ -137,19 +79,23 @@ $(document).ready(function() {
       '물장구': [],
       '손장구': [],
       '강강': [],
-      '모래': [],
+      '두드림11': [],
+      '두드림21': [],
+      '두드림61': [],
+      '물소리1': [],
+      '물장구1': [],
+      '손장구1': [],
+      '강강1': [],
     };
 
     //screen changer
-    var nscreen = 6;
+    var nscreen = 4;
     var screens = [];
     var screen_names = {};
     screen_names['start'] = 1;
-    screen_names['select'] = 2;
-    screen_names['check'] = 3;
-    screen_names['bridgeA'] = 4;
-    screen_names['path'] = 5;
-    screen_names['beach'] = 6;
+    screen_names['check'] = 2;
+    screen_names['beach1'] = 3;
+    screen_names['beach2'] = 4;
     var curscreen;
     for (var idx = 0; idx < nscreen; idx++) {
       screens.push(new Layer());
@@ -179,9 +125,6 @@ $(document).ready(function() {
       //pagination buttons
       if (curscreen == 1) {
         aprev._deactivate();
-      }
-      if (curscreen == 2) {
-        anext._deactivate();
       }
       if (curscreen == nscreen) {
         anext._deactivate();
@@ -226,7 +169,7 @@ $(document).ready(function() {
     var top = new Layer(); // new Layer() will be automatically activated at the moment.
 
     //networking - socket.io
-    //var socket = io('http://192.168.1.105:8080');
+    //var socket = io('http://192.168.42.20:8080');
     var socket = io('http://choir.run:8080');
 
     //net. connection marker
@@ -317,44 +260,8 @@ $(document).ready(function() {
     phonehand.position = view.center;
     //phonehand.position.y -= vssh;
 
-    //screen #2 - 'select'
-
+    //screen #2 - check
     changeScreen(2);
-    new Path.Rectangle([0, 0], vs).fillColor = '#3333ff'; //;
-
-    //group select buttons
-    var group_selected = undefined; //key
-    for (var row = 0; row < 2; row++) {
-      for (var col = 0; col < 2; col++) {
-        var idx = row * 2 + col;
-        var c = new Path.Circle({
-          center: [col * vssw * 3.5 + vssw * 2.5, row * vssw * 3.5 + vssw * 4 + vssw * 2.5],
-          radius: vssw * 1,
-          fillColor: new Color({
-            hue: getRandom(30, 180),
-            saturation: 1,
-            brightness: 1
-          }),
-          _idx: idx,
-          onClick: function() {
-            group_selected = group_keys[this._idx];
-            console.log(group_selected);
-            //next screen.
-            changeScreen(3);
-          }
-        });
-        new PointText({
-          point: c.bounds.topLeft + [0, -5],
-          content: group_names[idx],
-          fontSize: '2em',
-          fontWeight: 'bold',
-          fillColor: c.fillColor
-        });
-      }
-    }
-
-    //screen #3 - check
-    changeScreen(3);
     new Path.Rectangle([0, 0], vs).fillColor = '#393';
 
     //TODO: info text.
@@ -389,227 +296,46 @@ $(document).ready(function() {
       }
     });
 
-    //screen #4 - bridgeA
-    changeScreen(4);
-    new Path.Rectangle([0, 0], vs).fillColor = '#333';
-
-    //sound list
-    var buttons = [];
-
-    for (var row = 0; row < 3; row++) {
-      for (var col = 0; col < 3; col++) {
-        var idx = row * 3 + col;
-
-        //play/stop button (networked between groups)
-        var c = new Group([
-          new Path.Circle({
-            center: [col * vssw * 2.5 + vssw * 2, row * vssw * 2.3 + vssw * 5.5],
-            radius: vssw * 0.8,
-            fillColor: new Color({
-              hue: getRandom(20, 60),
-              saturation: 1,
-              brightness: 1
-            }),
-            _socket: socket,
-            _key: btn_names[idx],
-            _player: btn_sounds[idx],
-            _playcount: 0,
-            _init: function() {
-              var that = this;
-              this._socket.on('sound', function(msg) {
-                if (msg.group == group_selected && msg.name == that._key) {
-                  if (msg.action == 'start') {
-                    that._playstart();
-                    that._playcount++;
-                  }
-                }
-              });
-              this.nextSibling.opacity = 0; //marker off!
-              this._player.playMode('restart');
-            },
-            _playstart: function() {
-              // play (re-)start now!
-              this._player.play();
-              this.nextSibling.opacity = 1; //marker on!
-              var that = this;
-              this._player.onended(function() {
-                if (that._playcount > 0) {
-                  that._playcount--;
-                  if (that._playcount == 0) { // only do this, when it is finally stopped.
-                    that.nextSibling.opacity = 0; //marker off!
-                  }
-                }
-              });
-            },
-            _playstop: function() {
-              this._player.stop();
-              this.nextSibling.opacity = 0; //marker off!
-            },
-            onMouseDown: function() {
-              //
-              this._playstart();
-              this._playcount++;
-              //
-              this._socket.emit('sound', {
-                name: this._key,
-                action: 'start',
-                group: group_selected
-              });
-            }
-          }),
-          //the marking ring around the button
-          new Path.Circle({
-            center: [col * vssw * 2.5 + vssw * 2, row * vssw * 2.3 + vssw * 5.5],
-            radius: vssw * 1,
-            strokeWidth: 5,
-            strokeColor: 'white'
-          })
-        ]);
-        c.firstChild._init();
-        buttons.push(c);
-        //labels
-        new PointText({
-          point: c.firstChild.bounds.topLeft + [0, -5],
-          content: btn_names[idx],
-          fontSize: '1.5em',
-          fontWeight: 'bold',
-          fillColor: c.firstChild.fillColor
-        });
-      }
-    }
-    //speed controller - frame
-    new Group({
-      children: [
-        new Path.Rectangle({
-          point: [vsw - vssw * 1.5, vssh * 2.5],
-          size: [vssw, vssh * 6],
-          radius: 20,
-        }),
-        new Path.Rectangle({
-          point: [vsw - vssw * 1.5, vssh * 2.5],
-          size: [vssw, vssh * 3],
-          fillColor: 'blue'
-        }),
-        new Path.Rectangle({
-          point: [vsw - vssw * 1.5, vssh * 2.5 + vssh * 3],
-          size: [vssw, vssh * 3],
-          fillColor: 'gold'
-        }),
-      ],
-      clipped: true
-    });
-    //speed controller - knob
-    var knob = new Path.Circle({
-      center: [vsw - vssw, vssh * 2.5 + vssw * 0.5],
-      radius: 20,
-      fillColor: 'white',
-      _start_y: vssh * 2.5 + vssw * 0.5,
-      _end_y: vssh * 2.5 + vssh * 6 - vssw * 0.5,
-      onMouseDrag: function(event) {
-        if (event.point.y > this._end_y) {
-          this.position.y = this._end_y;
-        } else if (event.point.y < this._start_y) {
-          this.position.y = this._start_y;
-        } else {
-          this.position.y = event.point.y;
-        }
-        var control = map(this.position.y, [this._start_y, this._end_y], [-1, 1]);
-        //playback speed change.. (perform the effect)
-        buttons.forEach(function(item) {
-          item.firstChild._player.rate(Math.pow(5, control));
-        });
-      }
-    });
-    //initial position of the knob. 0 means 1 (Math.pow(XXX, 0) == 1)
-    knob.position.y = map(0, [-1, 1], [knob._start_y, knob._end_y]);
-    //stop button
-    var stopbtn = new Group({
-      _socket: socket,
-      children: [
-        new Path.Circle({
-          center: [vssw * 2.7 + vssw * 2, 2.5 * vssw * 2.7 + vssw * 6],
-          radius: vssw * 0.8
-        })
-      ],
-      onMouseDown: function() {
-        buttons.forEach(function(item) {
-          item.firstChild._playstop();
-          item.firstChild._playcount = 0;
-        });
-        //
-        this._socket.emit('sound', {
-          name: 'stop',
-          action: 'stop',
-          group: group_selected
-        });
-      }
-    });
-    //label
-    stopbtn.addChild(new PointText({
-      point: stopbtn.bounds.topLeft + [0, -5],
-      content: 'stop',
-      fontSize: '2em',
-      fontWeight: 'bold'
-    }));
-    stopbtn.fillColor = 'red';
-    //'stop' handler
-    socket.on('sound', function(msg) {
-      if (msg.action == 'stop') {
-        buttons.forEach(function(item) {
-          item.firstChild._playstop();
-          item.firstChild._playcount = 0;
-        });
-      }
-    });
-
-    //screen #5 - path
-    changeScreen(5);
+    //screen #3 - beach page #1
+    changeScreen(3);
     new Path.Rectangle([0, 0], vs).fillColor = '#333';
 
     //
-    for (var row = 0; row < 8; row++) {
+    for (var row = 0; row < 7; row++) {
       for (var col = 0; col < 1; col++) {
         var idx = row * 1 + col;
 
-        //play/stop/marker button (networked between groups)
+        //play/stop/playcount/faster/slower button (networked between groups)
         var c = new Group({
           children: [
             //play button
             new Path.Rectangle({
-              point: [vssw * 1.4, row * vssw * 1.5 + vssw * 4.5],
+              point: [vssw * 0.8, row * vssw * 1.4 + vssw * 3.5],
               radius: vssw * 0.4,
-              size: [vssw * 2.8, vssw * 0.8],
+              size: [vssw * 1.6, vssw * 0.7],
               fillColor: new Color({
                 hue: getRandom(20, 60),
                 saturation: 1,
                 brightness: 1
               }),
-              onMouseDown: function() {
+              onMouseDown: function(event) {
                 var par = this.parent;
-                par._player.play();
+                par._players.push(par._player.start()._source); // start playbacks and collect their '_source's..
                 par._playcount++;
-                par.lastChild.fillColor = 'white'; //marker on!
-                par._player.onended(function() {
-                  if (par._playcount > 0) {
-                    par._playcount--;
-                    if (par._playcount == 0) { // only do this, when it is finally stopped.
-                      par.lastChild.fillColor = 'black'; //marker off!
-                    }
-                  }
-                });
+                par.children.playcounter.content = '' + par._playcount;
                 //
                 par._socket.emit('sound', {
                   name: par._key,
                   action: 'start',
-                  group: 'path'
+                  group: 'beach'
                 });
               }
             }),
             //stop button
             new Path.Rectangle({
-              point: [vssw * 4.8, row * vssw * 1.5 + vssw * 4.5],
+              point: [vssw * 2.8, row * vssw * 1.4 + vssw * 3.5],
               radius: vssw * 0.4,
-              size: [vssw * 2.8, vssw * 0.8],
+              size: [vssw * 1.6, vssw * 0.7],
               fillColor: new Color({
                 hue: getRandom(120, 250),
                 saturation: 1,
@@ -617,37 +343,115 @@ $(document).ready(function() {
               }),
               onMouseDown: function() {
                 var par = this.parent;
-                par._player.stop();
-                par._playcount = 0;
-                par.lastChild.fillColor = 'black'; //marker off!
+                if (par._players.length > 0) {
+                  (par._players.shift()).stop();
+                  par._playcount--;
+                  par.children.playcounter.content = '' + par._playcount;
+                }
                 //
                 par._socket.emit('sound', {
                   name: par._key,
                   action: 'stop',
-                  group: 'path'
+                  group: 'beach'
                 });
               }
             }),
-            //playing marker
-            new Path.Circle({
-              center: [vssw * 8.5, row * vssw * 1.5 + vssw * 4.9],
+            //playcounter
+            new PointText({
+              name: 'playcounter',
+              content: '' + 0,
+              point: [vssw * 4.8, row * vssw * 1.4 + vssw * 3.5 + vssw * 0.6],
+              fillColor: 'white',
+              fontSize: '2em',
+              fontWeight: 'bold'
+            }),
+            //faster button
+            new Path.Rectangle({
+              point: [vssw * 5.8, row * vssw * 1.4 + vssw * 3.5],
               radius: vssw * 0.4,
-              fillColor: 'black'
+              size: [vssw * 1.6, vssw * 0.7],
+              fillColor: new Color({
+                hue: getRandom(20, 60),
+                saturation: 1,
+                brightness: 1
+              }),
+              onMouseDown: function() {
+                var par = this.parent;
+                if (par._players.length > 0) {
+                  par._players[par._players.length - 1].playbackRate.value += 0.2;
+                }
+                //
+                par._socket.emit('sound', {
+                  name: par._key,
+                  action: 'faster',
+                  group: 'beach'
+                });
+              }
+            }),
+            //slower button
+            new Path.Rectangle({
+              point: [vssw * 7.8, row * vssw * 1.4 + vssw * 3.5],
+              radius: vssw * 0.4,
+              size: [vssw * 1.6, vssw * 0.7],
+              fillColor: new Color({
+                hue: getRandom(120, 250),
+                saturation: 1,
+                brightness: 1
+              }),
+              onMouseDown: function() {
+                var par = this.parent;
+                if (par._players.length > 0) {
+                  par._players[par._players.length - 1].playbackRate.value -= 0.2;
+                }
+                //
+                par._socket.emit('sound', {
+                  name: par._key,
+                  action: 'slower',
+                  group: 'beach'
+                });
+              }
             })
           ],
           _socket: socket,
-          _key: Object.keys(set_sounds)[idx],
-          _player: set_sounds[Object.keys(set_sounds)[idx]],
+          _key: Object.keys(beach_sounds)[idx],
+          _player: beach_sounds[Object.keys(beach_sounds)[idx]],
+          _players: beach_players[Object.keys(beach_players)[idx]],
           _playcount: 0,
           _init: function() {
-            this._player.playMode('restart');
+            this._player.loop = true;
+            this._player.retrigger = true;
+            //socket io event handling..
+            var that = this;
+            this._socket.on('sound', function(msg) {
+              if (msg.group == 'beach' && msg.name == that._key) {
+                if (msg.action == 'start') {
+                  that._players.push(that._player.start()._source); // start playbacks and collect their '_source's..
+                  that._playcount++;
+                  that.children.playcounter.content = '' + that._playcount;
+                } else if (msg.action == 'stop') {
+                  if (that._players.length > 0) {
+                    (that._players.shift()).stop();
+                    that._playcount--;
+                    that.children.playcounter.content = '' + that._playcount;
+                  }
+                } else if (msg.action == 'faster') {
+                  if (that._players.length > 0) {
+                    that._players[that._players.length - 1].playbackRate.value += 0.2;
+                  }
+                } else if (msg.action == 'slower') {
+                  if (that._players.length > 0) {
+                    that._players[that._players.length - 1].playbackRate.value -= 0.2;
+                  }
+                }
+              }
+            });
           }
         });
         c._init();
         //label
         new PointText({
           point: c.firstChild.bounds.topLeft + [0, -5],
-          content: Object.keys(set_sounds)[idx],
+          content: Object.keys(beach_sounds)[idx],
           fontSize: '1em',
           fontWeight: 'bold',
           fillColor: 'white'
@@ -655,14 +459,14 @@ $(document).ready(function() {
       }
     }
 
-    //screen #6 - beach
-    changeScreen(6);
+    //screen #4 - beach page #2
+    changeScreen(4);
     new Path.Rectangle([0, 0], vs).fillColor = '#333';
 
     //
-    for (var row = 0; row < 8; row++) {
+    for (var row = 0; row < 7; row++) {
       for (var col = 0; col < 1; col++) {
-        var idx = row * 1 + col;
+        var idx = row * 1 + col + 7;
 
         //play/stop/playcount/faster/slower button (networked between groups)
         var c = new Group({
