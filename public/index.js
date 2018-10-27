@@ -39,7 +39,7 @@ $(document).ready(function() {
     AudioImport("./audio/beach/바람불어오는.mp3"),
     AudioImport("./audio/beach/달팽이종소리.mp3"),
     AudioImport("./audio/beach/나무다리건너.mp3"),
-    AudioImport("./audio/beach/사라져가는동식물.mp3"),
+    AudioImport("./audio/beach/안녕이름들.mp3"),
     //
   ]).then(function(imports) {
     //imgs
@@ -68,7 +68,7 @@ $(document).ready(function() {
       '바람': imports[18],
       '달팽이': imports[19],
       '나무다리': imports[20],
-      '사라져': imports[21],
+      '이름': imports[21],
     };
     //NOTE: beware! same key is not allowed!! every keys should have different name!!
     var beach_players = {
@@ -85,7 +85,7 @@ $(document).ready(function() {
       '바람': [],
       '달팽이': [],
       '나무다리': [],
-      '사라져': [],
+      '이름': [],
     };
     //NOTE: beware! same key is not allowed!! every keys should have different name!!
     var beach_playcounts = {
@@ -102,7 +102,7 @@ $(document).ready(function() {
       '바람': 0,
       '달팽이': 0,
       '나무다리': 0,
-      '사라져': 0,
+      '이름': 0,
     };
 
     //screen changer
