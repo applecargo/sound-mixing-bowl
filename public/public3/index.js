@@ -24,22 +24,22 @@ $(document).ready(function() {
     SVGImport_size1('./imgs/iconmonstr-minus-4.svg'),
     //clap
     AudioImport_p5("./audio/clap@2/" + ("0" + getRandomInt(1, 2)).slice(-2) + ".mp3"),
-    //beach_sounds page 1 ==> 7
-    AudioImport("./audio/beach/합주.mp3"),
-    AudioImport("./audio/beach/낙엽.mp3"),
-    AudioImport("./audio/beach/새소리.mp3"),
-    AudioImport("./audio/beach/물장구.mp3"),
-    AudioImport("./audio/beach/이름들.mp3"),
-    AudioImport("./audio/beach/물방울.mp3"),
-    AudioImport("./audio/beach/사람들.mp3"),
-    //beach_sounds page 2 ==> 7
-    AudioImport("./audio/beach/나무리듬.mp3"),
-    AudioImport("./audio/beach/바람개비.mp3"),
-    AudioImport("./audio/beach/일이삼사.mp3"),
-    AudioImport("./audio/beach/뻐꾸기웃음.mp3"),
-    AudioImport("./audio/beach/모래던지기.mp3"),
-    AudioImport("./audio/beach/귀요미물소리.mp3"),
-    AudioImport("./audio/beach/하모니카와멜로디온.mp3"),
+    //sounds page 1 ==> 7
+    AudioImport("./audio/합주.mp3"),
+    AudioImport("./audio/낙엽.mp3"),
+    AudioImport("./audio/새소리.mp3"),
+    AudioImport("./audio/물장구.mp3"),
+    AudioImport("./audio/이름들.mp3"),
+    AudioImport("./audio/물방울.mp3"),
+    AudioImport("./audio/사람들.mp3"),
+    //sounds page 2 ==> 7
+    AudioImport("./audio/나무리듬.mp3"),
+    AudioImport("./audio/바람개비.mp3"),
+    AudioImport("./audio/일이삼사.mp3"),
+    AudioImport("./audio/뻐꾸기웃음.mp3"),
+    AudioImport("./audio/모래던지기.mp3"),
+    AudioImport("./audio/귀요미물소리.mp3"),
+    AudioImport("./audio/하모니카와멜로디온.mp3"),
     //
   ]).then(function(imports) {
     //imgs
