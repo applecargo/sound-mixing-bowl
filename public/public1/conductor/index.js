@@ -25,10 +25,10 @@ $(document).ready(function() {
     //clap
     AudioImport_p5("./audio/clap@2/" + ("0" + getRandomInt(1, 2)).slice(-2) + ".mp3"),
     //beach_sounds page 1 ==> 7
-    AudioImport("./audio/고요1.mp3"),
-    AudioImport("./audio/고요2.mp3"),
-    AudioImport("./audio/고요3.mp3"),
-    AudioImport("./audio/고요4.mp3"),
+    AudioImport("./audio/이현1.mp3"),
+    AudioImport("./audio/이현2.mp3"),
+    AudioImport("./audio/이현3.mp3"),
+    AudioImport("./audio/이현4.mp3"),
     AudioImport("./audio/고요5.mp3"),
     AudioImport("./audio/고요6.mp3"),
     AudioImport("./audio/고요7.mp3"),
@@ -55,10 +55,10 @@ $(document).ready(function() {
     //beach list
     //NOTE: beware! same key is not allowed!! every keys should have different name!!
     var beach_sounds = {
-      '고요1' : imports[8],
-      '고요2' : imports[9],
-      '고요3' : imports[10],
-      '고요4' : imports[11],
+      '이현1' : imports[8],
+      '이현2' : imports[9],
+      '이현3' : imports[10],
+      '이현4' : imports[11],
       '고요5' : imports[12],
       '고요6' : imports[13],
       '고요7' : imports[14],
@@ -72,10 +72,10 @@ $(document).ready(function() {
     };
     //NOTE: beware! same key is not allowed!! every keys should have different name!!
     var beach_players = {
-      '고요1': [],
-      '고요2': [],
-      '고요3': [],
-      '고요4': [],
+      '이현1': [],
+      '이현2': [],
+      '이현3': [],
+      '이현4': [],
       '고요5': [],
       '고요6': [],
       '고요7': [],
