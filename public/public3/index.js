@@ -185,7 +185,8 @@ $(document).ready(function() {
 
     //networking - socket.io
     //var socket = io('http://192.168.42.20:8080');
-    var socket = io('http://choir.run:8080');
+    //var socket = io('http://choir.run:8080');
+    var socket = io('https://choir.run');
 
     //net. connection marker
     var netstat = new Path.Circle({
