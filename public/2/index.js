@@ -1,12 +1,3 @@
-나도_모르게_딸랑.mp3
-  -rw-r--r--   1 doohoyi  staff  171294 29 Feb 19:56 나도_모르게_우르르.mp3
-  -rw-r--r--   1 doohoyi  staff  203788 29 Feb 19:56 나도_모르게_한숨.mp3
-  -rw-r--r--   1 doohoyi  staff  116291 29 Feb 19:56 나도_모르게_메트로놈.mp3
-  -rw-r--r--   1 doohoyi  staff  245207 29 Feb 19:56 나도_모르게_사이렌소리.mp3
-  -rw-r--r--   1 doohoyi  staff  286493 29 Feb 19:51 과즙팡팡_바나나먹는소리.mp3
-  -rw-r--r--   1 doohoyi  staff  251784 29 Feb 19:51 과즙팡팡_오렌지까는소리.mp3
-  -rw-r--r--   1 doohoyi  staff  217396 29 Feb 19:51 과즙팡팡_오렌지먹는소리.mp3
-  -rw-r--r--   1 doohoyi  staff  160188 29 Feb 19:51 과즙팡팡_바나나꺾고까는소리.mp3
 //paperscript (paperjs)
 
 //'index' page
@@ -34,20 +25,20 @@ $(document).ready(function() {
     //clap
     AudioImport_p5("./audio/clap@2/" + ("0" + getRandomInt(1, 2)).slice(-2) + ".mp3"),
     //sounds page 1 ==> 7
-    AudioImport("./audio/연우1오돌토돌.mp3"),
-    AudioImport("./audio/연우2넘어짐.mp3"),
-    AudioImport("./audio/연우3피.mp3"),
-    AudioImport("./audio/연우4엄마.mp3"),
-    AudioImport("./audio/고요5.mp3"),
+    AudioImport("./audio/나도_모르게_딸랑.mp3"),
+    AudioImport("./audio/나도_모르게_우르르.mp3"),
+    AudioImport("./audio/나도_모르게_한숨.mp3"),
+    AudioImport("./audio/나도_모르게_메트로놈.mp3"),
+    AudioImport("./audio/나도_모르게_사이렌소리.mp3"),
     AudioImport("./audio/고요6.mp3"),
     AudioImport("./audio/고요7.mp3"),
     //sounds page 2 ==> 7
-    AudioImport("./audio/연준1웅성웅성.mp3"),
-    AudioImport("./audio/연준2헉.mp3"),
-    AudioImport("./audio/연준3긁힘.mp3"),
-    AudioImport("./audio/연준4후우.mp3"),
-    AudioImport("./audio/연준5얼얼.mp3"),
-    AudioImport("./audio/연준6치료.mp3"),
+    AudioImport("./audio/과즙팡팡_바나나먹는소리.mp3"),
+    AudioImport("./audio/과즙팡팡_오렌지까는소리.mp3"),
+    AudioImport("./audio/과즙팡팡_오렌지먹는소리.mp3"),
+    AudioImport("./audio/과즙팡팡_바나나꺾고까는소리.mp3"),
+    AudioImport("./audio/고요12.mp3"),
+    AudioImport("./audio/고요13.mp3"),
     AudioImport("./audio/고요14.mp3"),
     //
   ]).then(function(imports) {
@@ -64,53 +55,53 @@ $(document).ready(function() {
     //beach list
     //NOTE: beware! same key is not allowed!! every keys should have different name!!
     var beach_sounds = {
-      '연우1오돌토돌' : imports[8],
-      '연우2넘어짐' : imports[9],
-      '연우3피' : imports[10],
-      '연우4엄마' : imports[11],
-      '고요5' : imports[12],
+      '나도_모르게_딸랑' : imports[8],
+      '나도_모르게_우르르' : imports[9],
+      '나도_모르게_한숨' : imports[10],
+      '나도_모르게_메트로놈' : imports[11],
+      '나도_모르게_사이렌소리' : imports[12],
       '고요6' : imports[13],
       '고요7' : imports[14],
-      '연준1웅성웅성' : imports[15],
-      '연준2헉' : imports[16],
-      '연준3긁힘' : imports[17],
-      '연준4후우' : imports[18],
-      '연준5얼얼' : imports[19],
-      '연준6치료' : imports[20],
+      '과즙팡팡_바나나먹는소리' : imports[15],
+      '과즙팡팡_오렌지까는소리' : imports[16],
+      '과즙팡팡_오렌지먹는소리' : imports[17],
+      '과즙팡팡_바나나꺾고까는소리' : imports[18],
+      '고요12' : imports[19],
+      '고요13' : imports[20],
       '고요14' : imports[21],
     };
     //NOTE: beware! same key is not allowed!! every keys should have different name!!
     var beach_players = {
-      '연우1오돌토돌': [],
-      '연우2넘어짐': [],
-      '연우3피': [],
-      '연우4엄마': [],
-      '고요5': [],
+      '나도_모르게_딸랑': [],
+      '나도_모르게_우르르': [],
+      '나도_모르게_한숨': [],
+      '나도_모르게_메트로놈': [],
+      '나도_모르게_사이렌소리': [],
       '고요6': [],
       '고요7': [],
-      '연준1웅성웅성': [],
-      '연준2헉': [],
-      '연준3긁힘': [],
-      '연준4후우': [],
-      '연준5얼얼': [],
-      '연준6치료': [],
+      '과즙팡팡_바나나먹는소리': [],
+      '과즙팡팡_오렌지까는소리': [],
+      '과즙팡팡_오렌지먹는소리': [],
+      '과즙팡팡_바나나꺾고까는소리': [],
+      '고요12': [],
+      '고요13': [],
       '고요14': [],
     };
     //NOTE: beware! same key is not allowed!! every keys should have different name!!
     var beach_playcounts = {
-      '연우1오돌토돌': 0,
-      '연우2넘어짐': 0,
-      '연우3피': 0,
-      '연우4엄마': 0,
-      '고요5': 0,
+      '나도_모르게_딸랑': 0,
+      '나도_모르게_우르르': 0,
+      '나도_모르게_한숨': 0,
+      '나도_모르게_메트로놈': 0,
+      '나도_모르게_사이렌소리': 0,
       '고요6': 0,
       '고요7': 0,
-      '연준1웅성웅성': 0,
-      '연준2헉': 0,
-      '연준3긁힘': 0,
-      '연준4후우': 0,
-      '연준5얼얼': 0,
-      '연준6치료': 0,
+      '과즙팡팡_바나나먹는소리': 0,
+      '과즙팡팡_오렌지까는소리': 0,
+      '과즙팡팡_오렌지먹는소리': 0,
+      '과즙팡팡_바나나꺾고까는소리': 0,
+      '고요12': 0,
+      '고요13': 0,
       '고요14': 0,
     };
 
