@@ -30,7 +30,7 @@ $(document).ready(function() {
     AudioImport("./audio/나도_모르게_한숨.mp3"),
     AudioImport("./audio/나도_모르게_메트로놈.mp3"),
     AudioImport("./audio/나도_모르게_사이렌소리.mp3"),
-    AudioImport("./audio/나도_모르게_커피머신.mp3"),
+    AudioImport("./audio/나도_모르게_커피머신.mp3")
     AudioImport("./audio/고요7.mp3"),
     //sounds page 2 ==> 7
     AudioImport("./audio/과즙팡팡_바나나꺾고까는소리.mp3"),
