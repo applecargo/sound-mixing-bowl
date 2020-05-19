@@ -383,7 +383,6 @@ $(document).ready(function() {
                     speed: cur_pan_speed
                   });
                   par.children.playcounter.content = '' + (cur_pan_width_idx + 1);
-                  par.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
                 } else {
                   par._players.push(par._player.start()._source); // start playbacks and collect their '_source's..
                   par._playcount++;
@@ -442,7 +441,6 @@ $(document).ready(function() {
                     speed: cur_pan_speed
                   });
                   par.children.playcounter.content = '' + (cur_pan_width_idx + 1);
-                  par.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
                 } else {
                   if (par._players.length > 0) {
                     (par._players.shift()).stop();
@@ -492,7 +490,7 @@ $(document).ready(function() {
                     width: cur_pan_width,
                     speed: cur_pan_speed
                   });
-                  par.children.speedcounter.content = Number.parseFloat(cur_pan_speed).toFixed(1);
+                  par.children.speedcounter.content = '' + (cur_pan_speed_idx + 1);
                 } else {
                   if (par._players.length > 0) {
                     par._players[par._players.length - 1].playbackRate.value += 0.2;
@@ -552,7 +550,7 @@ $(document).ready(function() {
                     width: cur_pan_width,
                     speed: cur_pan_speed
                   });
-                  par.children.speedcounter.content = Number.parseFloat(cur_pan_speed).toFixed(1);
+                  par.children.speedcounter.content = '' + (cur_pan_speed_idx + 1);
                 } else {
                   if (par._players.length > 0) {
                     var val = par._players[par._players.length - 1].playbackRate.value;
@@ -692,7 +690,6 @@ $(document).ready(function() {
                     speed: cur_pan_speed
                   });
                   par.children.playcounter.content = '' + (cur_pan_width_idx + 1);
-                  par.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
                 } else {
                   par._players.push(par._player.start()._source); // start playbacks and collect their '_source's..
                   par._playcount++;
@@ -751,7 +748,6 @@ $(document).ready(function() {
                     speed: cur_pan_speed
                   });
                   par.children.playcounter.content = '' + (cur_pan_width_idx + 1);
-                  par.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
                 } else {
                   if (par._players.length > 0) {
                     (par._players.shift()).stop();
@@ -801,7 +797,7 @@ $(document).ready(function() {
                     width: cur_pan_width,
                     speed: cur_pan_speed
                   });
-                  par.children.speedcounter.content = Number.parseFloat(cur_pan_speed).toFixed(1);
+                  par.children.speedcounter.content = '' + (cur_pan_speed_idx + 1);
                 } else {
                   if (par._players.length > 0) {
                     par._players[par._players.length - 1].playbackRate.value += 0.2;
@@ -861,7 +857,7 @@ $(document).ready(function() {
                     width: cur_pan_width,
                     speed: cur_pan_speed
                   });
-                  par.children.speedcounter.content = Number.parseFloat(cur_pan_speed).toFixed(1);
+                  par.children.speedcounter.content = '' + (cur_pan_speed_idx + 1);
                 } else {
                   if (par._players.length > 0) {
                     var val = par._players[par._players.length - 1].playbackRate.value;
