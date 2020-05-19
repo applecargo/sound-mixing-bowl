@@ -20,24 +20,26 @@ $(document).ready(function() {
     SVGImport_size1('./imgs/arrow-circle-left.svg'),
     SVGImport_size1('./imgs/hand-point-right-regular.svg'),
     SVGImport_size1('./imgs/listen-icon.svg'),
-    SVGImport_size1('./imgs/iconmonstr-plus-4.svg'),
-    SVGImport_size1('./imgs/iconmonstr-minus-4.svg'),
+    SVGImport_size1('./imgs/plus.svg'),
+    SVGImport_size1('./imgs/minus.svg'),
+    SVGImport_size1('./imgs/faster.svg'),
+    SVGImport_size1('./imgs/slower.svg'),
     //clap
     AudioImport_p5("./audio/clap@2/" + ("0" + getRandomInt(1, 2)).slice(-2) + ".mp3"),
     //beach_sounds page 1 ==> 7
-    AudioImport("./audio/2011_2011.mp3"),
-    AudioImport("./audio/2011_벨.mp3"),
-    AudioImport("./audio/2011_숲.mp3"),
-    AudioImport("./audio/2011_바람.mp3"),
-    AudioImport("./audio/2011_헤비레인.mp3"),
-    AudioImport("./audio/고요6.mp3"),
-    AudioImport("./audio/고요7.mp3"),
-    //beach_sounds page 2 ==> 7
-    AudioImport("./audio/검은산_뚜루.mp3"),
     AudioImport("./audio/검은산_다급.mp3"),
+    AudioImport("./audio/검은산_뚜루.mp3"),
     AudioImport("./audio/검은산_부엉.mp3"),
     AudioImport("./audio/검은산_불안.mp3"),
     AudioImport("./audio/검은산_쏟아짐.mp3"),
+    AudioImport("./audio/고요6.mp3"),
+    AudioImport("./audio/고요7.mp3"),
+    //beach_sounds page 2 ==> 7
+    AudioImport("./audio/기정_과자봉지소리.mp3"),
+    AudioImport("./audio/기정_라디오.mp3"),
+    AudioImport("./audio/기정_물소리(붓).mp3"),
+    AudioImport("./audio/기정_악기.mp3"),
+    AudioImport("./audio/고요12.mp3"),
     AudioImport("./audio/고요13.mp3"),
     AudioImport("./audio/고요14.mp3"),
     //
@@ -50,68 +52,54 @@ $(document).ready(function() {
     var iconsound = imports[4];
     var plus = imports[5];
     var minus = imports[6];
+    var faster = imports[7];
+    var slower = imports[8];
     //clap
-    var clap = imports[7];
+    var clap = imports[9];
     //beach list
     //NOTE: beware! same key is not allowed!! every keys should have different name!!
     var beach_sounds = {
-      '2011_2011' : imports[8],
-      '2011_벨' : imports[9],
-      '2011_숲' : imports[10],
-      '2011_바람' : imports[11],
-      '2011_헤비레인' : imports[12],
-      '고요6' : imports[13],
-      '고요7' : imports[14],
-      '검은산_뚜루' : imports[15],
-      '검은산_다급' : imports[16],
-      '검은산_부엉' : imports[17],
-      '검은산_불안' : imports[18],
-      '검은산_쏟아짐' : imports[19],
-      '고요13' : imports[20],
-      '고요14' : imports[21],
+      '검은산_다급': imports[10],
+      '검은산_뚜루': imports[11],
+      '검은산_부엉': imports[12],
+      '검은산_불안': imports[13],
+      '검은산_쏟아짐': imports[14],
+      '고요6': imports[15],
+      '_소리의_퍼짐______소리의_움직임_1': imports[16],
+      '기정_과자봉지소리': imports[17],
+      '기정_라디오': imports[18],
+      '기정_물소리(붓)': imports[19],
+      '기정_악기': imports[20],
+      '고요12': imports[21],
+      '고요13': imports[22],
+      '_소리의_퍼짐______소리의_움직임_2': imports[23],
     };
     //NOTE: beware! same key is not allowed!! every keys should have different name!!
     var beach_players = {
-      '2011_2011': [],
-      '2011_벨': [],
-      '2011_숲': [],
-      '2011_바람': [],
-      '2011_헤비레인': [],
-      '고요6': [],
-      '고요7': [],
-      '검은산_뚜루': [],
       '검은산_다급': [],
+      '검은산_뚜루': [],
       '검은산_부엉': [],
       '검은산_불안': [],
       '검은산_쏟아짐': [],
+      '고요6': [],
+      '_소리의_퍼짐______소리의_움직임_1': [],
+      '기정_과자봉지소리': [],
+      '기정_라디오': [],
+      '기정_물소리(붓)': [],
+      '기정_악기': [],
+      '고요12': [],
       '고요13': [],
-      '고요14': [],
-    };
-    //NOTE: beware! same key is not allowed!! every keys should have different name!!
-    var beach_playcounts = {
-      '2011_2011': 0,
-      '2011_벨': 0,
-      '2011_숲': 0,
-      '2011_바람': 0,
-      '2011_헤비레인': 0,
-      '고요6': 0,
-      '고요7': 0,
-      '검은산_뚜루': 0,
-      '검은산_다급': 0,
-      '검은산_부엉': 0,
-      '검은산_불안': 0,
-      '검은산_쏟아짐': 0,
-      '고요13': 0,
-      '고요14': 0,
+      '_소리의_퍼짐______소리의_움직임_2': [],
     };
 
     //screen changer
-    var nscreen = 3;
+    var nscreen = 4;
     var screens = [];
     var screen_names = {};
     screen_names['start'] = 1;
     screen_names['check'] = 2;
-    screen_names['beach'] = 3;
+    screen_names['beach1'] = 3;
+    screen_names['beach2'] = 4;
     var curscreen;
     for (var idx = 0; idx < nscreen; idx++) {
       screens.push(new Layer());
@@ -198,7 +186,7 @@ $(document).ready(function() {
       strokeColor: '#FFE40A',
       dashArray: [vssw * 0.05, vssw * 0.05],
       onFrame: function(event) {
-        this.rotate(0.2);
+        // this.rotate(0.2);
       }
     });
     netstat.fillColor.alpha = 0;
@@ -334,9 +322,18 @@ $(document).ready(function() {
       }
     });
 
+    //global panning variable
+    //NOTE: this DOES NOT sync between web-clients! <-- TBD, yet NOT-IMPLEMENTED !
+    var pan_width_pool = [1000, 2000, 3000, 4000, 8000, 80000];
+    var pan_speed_pool = [0, 10, 30, 50, 80, 200, 400, 1200];
+    var cur_pan_width_idx = pan_width_pool.length - 1;
+    var cur_pan_speed_idx = 0;
+    var cur_pan_width = 0;
+    var cur_pan_speed = 0;
+
     //screen #3 - beach page #1
     changeScreen(3);
-    new Path.Rectangle([0, 0], vs).fillColor = '#333';
+    new Path.Rectangle([0, 0], vs).fillColor = '#555';
 
     //title - text
     new PointText({
@@ -348,56 +345,605 @@ $(document).ready(function() {
       fontSize: '3em'
     }).fitBounds(titlebox.bounds);
 
-    iconsound.addTo(project);
-    //iconsound.scale(vsw / 1.5);
-    iconsound.scale(vsw / 2.5);
-    iconsound.position = view.center;
-    iconsound.fillColor = '#00acfe';
+    //
+    for (var row = 0; row < 7; row++) {
+      for (var col = 0; col < 1; col++) {
+        var idx = row * 1 + col;
 
-    new Group({
-      children: [
-        new Path.Circle({
-          center: view.center,
-          radius: vssw * 3,
-          fillColor: '#fef1b5', // buttermilk
-          opacity: 0.6
-        })
-      ],
-      onClick: function() {
-        clap.play();
-      }
-    }).addChild(iconsound);
-
-    //play mode
-    Object.keys(beach_sounds).forEach(function (key) {
-      //
-      beach_sounds[key].loop = true;
-      beach_sounds[key].retrigger = true;
-
-      //socket io event handling..
-      // var that = this;
-      socket.on('sound', function(msg) {
-        if (msg.group == 'beach' && msg.name == key) {
-          if (msg.action == 'start') {
-            beach_players[key].push(beach_sounds[key].start()._source); // start playbacks and collect their '_source's..
-            beach_playcounts[key]++;
-          } else if (msg.action == 'stop') {
-            if (beach_players[key].length > 0) {
-              (beach_players[key].shift()).stop();
-              beach_playcounts[key]--;
-            }
-          } else if (msg.action == 'faster') {
-            if (beach_players[key].length > 0) {
-              beach_players[key][beach_players[key].length - 1].playbackRate.value += 0.2;
-            }
-          } else if (msg.action == 'slower') {
-            if (beach_players[key].length > 0) {
-              beach_players[key][beach_players[key].length - 1].playbackRate.value -= 0.2;
-            }
+        //play/stop/playcount/faster/slower button (networked between groups)
+        var c = new Group({
+          children: [
+            //play button
+            new Group({
+              name: 'play_btn',
+              children: [
+                new Path.Rectangle({
+                  point: [vssw * 0.8, row * vssw * 1.4 + vssw * 3.5],
+                  radius: vssw * 0.4,
+                  size: [vssw * 1.5, vssw * 0.7],
+                  fillColor: new Color({
+                    hue: getRandom(20, 60),
+                    saturation: 1,
+                    brightness: 1
+                  }),
+                }),
+                plus.clone()
+              ],
+              onMouseDown: function(event) {
+                var par = this.parent;
+                //NOTE: this DOES NOT sync between web-clients! <-- TBD, yet NOT-IMPLEMENTED !
+                if (par._key == '_소리의_퍼짐______소리의_움직임_1' || par._key == '_소리의_퍼짐______소리의_움직임_2') {
+                  //pan_width: (+)
+                  if (cur_pan_width_idx < (pan_width_pool.length - 1)) {
+                    cur_pan_width_idx++;
+                  }
+                  cur_pan_width = pan_width_pool[cur_pan_width_idx];
+                  par._socket.emit('pan', {
+                    width: cur_pan_width,
+                    speed: cur_pan_speed
+                  });
+                  par.children.playcounter.content = '' + (cur_pan_width_idx + 1);
+                } else {
+                  par._players.push(par._player.start()._source); // start playbacks and collect their '_source's..
+                  par._playcount++;
+                  par.children.playcounter.content = '' + par._playcount;
+                  par.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
+                  //
+                  par._socket.emit('sound', {
+                    name: par._key,
+                    action: 'start',
+                    group: 'beach'
+                  });
+                }
+              }
+            }),
+            //playcounterbox
+            new Path.Rectangle({
+              name: 'playcounterbox',
+              point: [vssw * 2.3, row * vssw * 1.4 + vssw * 3.5],
+              size: [vssw * 0.6, vssw * 0.8],
+            }),
+            //playcounter
+            new PointText({
+              name: 'playcounter',
+              content: '' + 0,
+              fillColor: 'white',
+              fontSize: '2em',
+              fontWeight: 'bold'
+            }),
+            //stop button
+            new Group({
+              name: 'stop_btn',
+              children: [
+                new Path.Rectangle({
+                  point: [vssw * 2.9, row * vssw * 1.4 + vssw * 3.5],
+                  radius: vssw * 0.4,
+                  size: [vssw * 1.6, vssw * 0.7],
+                  fillColor: new Color({
+                    hue: getRandom(120, 180),
+                    saturation: 1,
+                    brightness: 1
+                  }),
+                }),
+                minus.clone()
+              ],
+              onMouseDown: function() {
+                var par = this.parent;
+                //NOTE: this DOES NOT sync between web-clients! <-- TBD, yet NOT-IMPLEMENTED !
+                if (par._key == '_소리의_퍼짐______소리의_움직임_1' || par._key == '_소리의_퍼짐______소리의_움직임_2') {
+                  //pan_width : (-)
+                  if (cur_pan_width_idx > 0) {
+                    cur_pan_width_idx--;
+                  }
+                  cur_pan_width = pan_width_pool[cur_pan_width_idx];
+                  par._socket.emit('pan', {
+                    width: cur_pan_width,
+                    speed: cur_pan_speed
+                  });
+                  par.children.playcounter.content = '' + (cur_pan_width_idx + 1);
+                } else {
+                  if (par._players.length > 0) {
+                    (par._players.shift()).stop();
+                    par._playcount--;
+                    par.children.playcounter.content = '' + par._playcount;
+                  }
+                  if (par._players.length == 0) {
+                    par.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
+                  }
+                  //
+                  par._socket.emit('sound', {
+                    name: par._key,
+                    action: 'stop',
+                    group: 'beach'
+                  });
+                }
+              }
+            }),
+            //faster button
+            new Group({
+              name: 'faster_btn',
+              children: [
+                new Path.Rectangle({
+                  point: [vssw * 5.0, row * vssw * 1.4 + vssw * 3.5],
+                  radius: vssw * 0.4,
+                  size: [vssw * 1.6, vssw * 0.7],
+                  strokeColor: new Color({
+                    hue: getRandom(20, 60),
+                    saturation: 1,
+                    brightness: 1
+                  }),
+                  strokeWidth: vssw * 0.03,
+                  fillColor: "#555"
+                }),
+                faster.clone()
+              ],
+              onMouseDown: function() {
+                var par = this.parent;
+                //NOTE: this DOES NOT sync between web-clients! <-- TBD, yet NOT-IMPLEMENTED !
+                if (par._key == '_소리의_퍼짐______소리의_움직임_1' || par._key == '_소리의_퍼짐______소리의_움직임_2') {
+                  //pan_speed: (+)
+                  if (cur_pan_speed_idx < (pan_speed_pool.length - 1)) {
+                    cur_pan_speed_idx++;
+                  }
+                  cur_pan_speed = pan_speed_pool[cur_pan_speed_idx];
+                  par._socket.emit('pan', {
+                    width: cur_pan_width,
+                    speed: cur_pan_speed
+                  });
+                  par.children.speedcounter.content = '' + cur_pan_speed_idx;
+                } else {
+                  if (par._players.length > 0) {
+                    par._players[par._players.length - 1].playbackRate.value += 0.2;
+                    par.children.speedcounter.content = Number.parseFloat(par._players[par._players.length - 1].playbackRate.value).toFixed(1);
+                  }
+                  //
+                  par._socket.emit('sound', {
+                    name: par._key,
+                    action: 'faster',
+                    group: 'beach'
+                  });
+                }
+              }
+            }),
+            //speedcounterbox
+            new Path.Rectangle({
+              name: 'speedcounterbox',
+              point: [vssw * 6.6, row * vssw * 1.4 + vssw * 3.5],
+              size: [vssw * 0.6, vssw * 0.8],
+            }),
+            //speedcounter
+            new PointText({
+              name: 'speedcounter',
+              content: '' + 0,
+              fillColor: 'white',
+              fontSize: '2em',
+              fontWeight: 'bold'
+            }),
+            //slower button
+            new Group({
+              name: 'slower_btn',
+              children: [
+                new Path.Rectangle({
+                  point: [vssw * 7.8, row * vssw * 1.4 + vssw * 3.5],
+                  radius: vssw * 0.4,
+                  size: [vssw * 1.6, vssw * 0.7],
+                  strokeColor: new Color({
+                    hue: getRandom(120, 180),
+                    saturation: 1,
+                    brightness: 1
+                  }),
+                  strokeWidth: vssw * 0.03,
+                  fillColor: "#555"
+                }),
+                slower.clone()
+              ],
+              onMouseDown: function() {
+                var par = this.parent;
+                //NOTE: this DOES NOT sync between web-clients! <-- TBD, yet NOT-IMPLEMENTED !
+                if (par._key == '_소리의_퍼짐______소리의_움직임_1' || par._key == '_소리의_퍼짐______소리의_움직임_2') {
+                  //pan_speed: (-)
+                  if (cur_pan_speed_idx > 0) {
+                    cur_pan_speed_idx--;
+                  }
+                  cur_pan_speed = pan_speed_pool[cur_pan_speed_idx];
+                  par._socket.emit('pan', {
+                    width: cur_pan_width,
+                    speed: cur_pan_speed
+                  });
+                  par.children.speedcounter.content = '' + cur_pan_speed_idx;
+                } else {
+                  if (par._players.length > 0) {
+                    var val = par._players[par._players.length - 1].playbackRate.value;
+                    if (val > 0.2) {
+                      par._players[par._players.length - 1].playbackRate.value = val - 0.2;
+                    }
+                    par.children.speedcounter.content = Number.parseFloat(par._players[par._players.length - 1].playbackRate.value).toFixed(1);
+                  }
+                  //
+                  par._socket.emit('sound', {
+                    name: par._key,
+                    action: 'slower',
+                    group: 'beach'
+                  });
+                }
+              }
+            })
+          ],
+          _socket: socket,
+          _key: Object.keys(beach_sounds)[idx],
+          _player: beach_sounds[Object.keys(beach_sounds)[idx]],
+          _players: beach_players[Object.keys(beach_players)[idx]],
+          _playcount: 0,
+          _init: function() {
+            this._player.loop = true;
+            this._player.retrigger = true;
+            // set icons
+            this.children.play_btn.children[1].fitBounds(this.children.play_btn.children[0].bounds);
+            this.children.play_btn.children[1].fillColor = "#555";
+            this.children.stop_btn.children[1].fitBounds(this.children.stop_btn.children[0].bounds);
+            this.children.stop_btn.children[1].fillColor = "#555";
+            this.children.faster_btn.children[1].fitBounds(this.children.faster_btn.children[0].bounds);
+            this.children.faster_btn.children[1].fillColor = "orange";
+            this.children.slower_btn.children[1].fitBounds(this.children.slower_btn.children[0].bounds);
+            this.children.slower_btn.children[1].fillColor = "lime";
+            // positioning numberboxes...
+            this.children.playcounter.fitBounds(this.children.playcounterbox.bounds);
+            this.children.speedcounter.fitBounds(this.children.speedcounterbox.bounds);
+            this.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
+            //socket io event handling..
+            var that = this;
+            this._socket.on('sound', function(msg) {
+              if (msg.group == 'beach' && msg.name == that._key) {
+                if (msg.action == 'start') {
+                  that._players.push(that._player.start()._source); // start playbacks and collect their '_source's..
+                  that._playcount++;
+                  that.children.playcounter.content = '' + that._playcount;
+                  that.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
+                } else if (msg.action == 'stop') {
+                  if (that._players.length > 0) {
+                    (that._players.shift()).stop();
+                    that._playcount--;
+                    that.children.playcounter.content = '' + that._playcount;
+                  }
+                  if (that._players.length == 0) {
+                    that.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
+                  }
+                } else if (msg.action == 'faster') {
+                  if (that._players.length > 0) {
+                    that._players[that._players.length - 1].playbackRate.value += 0.2;
+                    that.children.speedcounter.content = Number.parseFloat(that._players[that._players.length - 1].playbackRate.value).toFixed(1);
+                  }
+                } else if (msg.action == 'slower') {
+                  if (that._players.length > 0) {
+                    var val = that._players[that._players.length - 1].playbackRate.value;
+                    if (val > 0.2) {
+                      that._players[that._players.length - 1].playbackRate.value -= 0.2;
+                    }
+                    that.children.speedcounter.content = Number.parseFloat(that._players[that._players.length - 1].playbackRate.value).toFixed(1);
+                  }
+                }
+              }
+            });
           }
-        }
-      });
-    });
+        });
+        c._init();
+        //label
+        new PointText({
+          point: c.firstChild.bounds.topLeft + [0, -5],
+          content: Object.keys(beach_sounds)[idx],
+          fontSize: vssw * 0.55,
+          fontWeight: 'bold',
+          fillColor: 'white'
+        });
+      }
+    }
+
+    //screen #4 - beach page #2
+    changeScreen(4);
+    new Path.Rectangle([0, 0], vs).fillColor = '#555';
+
+    //title - text
+    new PointText({
+      point: [vssw * 2, vssw * 1],
+      content: '           믹스 #2           ',
+      fillColor: 'white',
+      fontFamily: 'AppleGothic, Sans-serif',
+      fontWeight: 'bold',
+      fontSize: '3em'
+    }).fitBounds(titlebox.bounds);
+
+    //
+    for (var row = 0; row < 7; row++) {
+      for (var col = 0; col < 1; col++) {
+        var idx = row * 1 + col + 7;
+
+        //play/stop/playcount/faster/slower button (networked between groups)
+        var c = new Group({
+          children: [
+            //play button
+            new Group({
+              name: 'play_btn',
+              children: [
+                new Path.Rectangle({
+                  point: [vssw * 0.8, row * vssw * 1.4 + vssw * 3.5],
+                  radius: vssw * 0.4,
+                  size: [vssw * 1.5, vssw * 0.7],
+                  fillColor: new Color({
+                    hue: getRandom(20, 60),
+                    saturation: 1,
+                    brightness: 1
+                  }),
+                }),
+                plus.clone()
+              ],
+              onMouseDown: function(event) {
+                var par = this.parent;
+                //NOTE: this DOES NOT sync between web-clients! <-- TBD, yet NOT-IMPLEMENTED !
+                if (par._key == '_소리의_퍼짐______소리의_움직임_1' || par._key == '_소리의_퍼짐______소리의_움직임_2') {
+                  //pan_width: (+)
+                  if (cur_pan_width_idx < (pan_width_pool.length - 1)) {
+                    cur_pan_width_idx++;
+                  }
+                  cur_pan_width = pan_width_pool[cur_pan_width_idx];
+                  par._socket.emit('pan', {
+                    width: cur_pan_width,
+                    speed: cur_pan_speed
+                  });
+                  par.children.playcounter.content = '' + (cur_pan_width_idx + 1);
+                } else {
+                  par._players.push(par._player.start()._source); // start playbacks and collect their '_source's..
+                  par._playcount++;
+                  par.children.playcounter.content = '' + par._playcount;
+                  par.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
+                  //
+                  par._socket.emit('sound', {
+                    name: par._key,
+                    action: 'start',
+                    group: 'beach'
+                  });
+                }
+              }
+            }),
+            //playcounterbox
+            new Path.Rectangle({
+              name: 'playcounterbox',
+              point: [vssw * 2.3, row * vssw * 1.4 + vssw * 3.5],
+              size: [vssw * 0.6, vssw * 0.8],
+            }),
+            //playcounter
+            new PointText({
+              name: 'playcounter',
+              content: '' + 0,
+              fillColor: 'white',
+              fontSize: '2em',
+              fontWeight: 'bold'
+            }),
+            //stop button
+            new Group({
+              name: 'stop_btn',
+              children: [
+                new Path.Rectangle({
+                  point: [vssw * 2.9, row * vssw * 1.4 + vssw * 3.5],
+                  radius: vssw * 0.4,
+                  size: [vssw * 1.6, vssw * 0.7],
+                  fillColor: new Color({
+                    hue: getRandom(120, 180),
+                    saturation: 1,
+                    brightness: 1
+                  }),
+                }),
+                minus.clone()
+              ],
+              onMouseDown: function() {
+                var par = this.parent;
+                //NOTE: this DOES NOT sync between web-clients! <-- TBD, yet NOT-IMPLEMENTED !
+                if (par._key == '_소리의_퍼짐______소리의_움직임_1' || par._key == '_소리의_퍼짐______소리의_움직임_2') {
+                  //pan_width : (-)
+                  if (cur_pan_width_idx > 0) {
+                    cur_pan_width_idx--;
+                  }
+                  cur_pan_width = pan_width_pool[cur_pan_width_idx];
+                  par._socket.emit('pan', {
+                    width: cur_pan_width,
+                    speed: cur_pan_speed
+                  });
+                  par.children.playcounter.content = '' + (cur_pan_width_idx + 1);
+                } else {
+                  if (par._players.length > 0) {
+                    (par._players.shift()).stop();
+                    par._playcount--;
+                    par.children.playcounter.content = '' + par._playcount;
+                  }
+                  if (par._players.length == 0) {
+                    par.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
+                  }
+                  //
+                  par._socket.emit('sound', {
+                    name: par._key,
+                    action: 'stop',
+                    group: 'beach'
+                  });
+                }
+              }
+            }),
+            //faster button
+            new Group({
+              name: 'faster_btn',
+              children: [
+                new Path.Rectangle({
+                  point: [vssw * 5.0, row * vssw * 1.4 + vssw * 3.5],
+                  radius: vssw * 0.4,
+                  size: [vssw * 1.6, vssw * 0.7],
+                  strokeColor: new Color({
+                    hue: getRandom(20, 60),
+                    saturation: 1,
+                    brightness: 1
+                  }),
+                  strokeWidth: vssw * 0.03,
+                  fillColor: "#555"
+                }),
+                faster.clone()
+              ],
+              onMouseDown: function() {
+                var par = this.parent;
+                //NOTE: this DOES NOT sync between web-clients! <-- TBD, yet NOT-IMPLEMENTED !
+                if (par._key == '_소리의_퍼짐______소리의_움직임_1' || par._key == '_소리의_퍼짐______소리의_움직임_2') {
+                  //pan_speed: (+)
+                  if (cur_pan_speed_idx < (pan_speed_pool.length - 1)) {
+                    cur_pan_speed_idx++;
+                  }
+                  cur_pan_speed = pan_speed_pool[cur_pan_speed_idx];
+                  par._socket.emit('pan', {
+                    width: cur_pan_width,
+                    speed: cur_pan_speed
+                  });
+                  par.children.speedcounter.content = '' + cur_pan_speed_idx;
+                } else {
+                  if (par._players.length > 0) {
+                    par._players[par._players.length - 1].playbackRate.value += 0.2;
+                    par.children.speedcounter.content = Number.parseFloat(par._players[par._players.length - 1].playbackRate.value).toFixed(1);
+                  }
+                  //
+                  par._socket.emit('sound', {
+                    name: par._key,
+                    action: 'faster',
+                    group: 'beach'
+                  });
+                }
+              }
+            }),
+            //speedcounterbox
+            new Path.Rectangle({
+              name: 'speedcounterbox',
+              point: [vssw * 6.6, row * vssw * 1.4 + vssw * 3.5],
+              size: [vssw * 0.6, vssw * 0.8],
+            }),
+            //speedcounter
+            new PointText({
+              name: 'speedcounter',
+              content: '' + 0,
+              fillColor: 'white',
+              fontSize: '2em',
+              fontWeight: 'bold'
+            }),
+            //slower button
+            new Group({
+              name: 'slower_btn',
+              children: [
+                new Path.Rectangle({
+                  point: [vssw * 7.8, row * vssw * 1.4 + vssw * 3.5],
+                  radius: vssw * 0.4,
+                  size: [vssw * 1.6, vssw * 0.7],
+                  strokeColor: new Color({
+                    hue: getRandom(120, 180),
+                    saturation: 1,
+                    brightness: 1
+                  }),
+                  strokeWidth: vssw * 0.03,
+                  fillColor: "#555"
+                }),
+                slower.clone()
+              ],
+              onMouseDown: function() {
+                var par = this.parent;
+                //NOTE: this DOES NOT sync between web-clients! <-- TBD, yet NOT-IMPLEMENTED !
+                if (par._key == '_소리의_퍼짐______소리의_움직임_1' || par._key == '_소리의_퍼짐______소리의_움직임_2') {
+                  //pan_speed: (-)
+                  if (cur_pan_speed_idx > 0) {
+                    cur_pan_speed_idx--;
+                  }
+                  cur_pan_speed = pan_speed_pool[cur_pan_speed_idx];
+                  par._socket.emit('pan', {
+                    width: cur_pan_width,
+                    speed: cur_pan_speed
+                  });
+                  par.children.speedcounter.content = '' + cur_pan_speed_idx;
+                } else {
+                  if (par._players.length > 0) {
+                    var val = par._players[par._players.length - 1].playbackRate.value;
+                    if (val > 0.2) {
+                      par._players[par._players.length - 1].playbackRate.value = val - 0.2;
+                    }
+                    par.children.speedcounter.content = Number.parseFloat(par._players[par._players.length - 1].playbackRate.value).toFixed(1);
+                  }
+                  //
+                  par._socket.emit('sound', {
+                    name: par._key,
+                    action: 'slower',
+                    group: 'beach'
+                  });
+                }
+              }
+            })
+          ],
+          _socket: socket,
+          _key: Object.keys(beach_sounds)[idx],
+          _player: beach_sounds[Object.keys(beach_sounds)[idx]],
+          _players: beach_players[Object.keys(beach_players)[idx]],
+          _playcount: 0,
+          _init: function() {
+            this._player.loop = true;
+            this._player.retrigger = true;
+            // set icons
+            this.children.play_btn.children[1].fitBounds(this.children.play_btn.children[0].bounds);
+            this.children.play_btn.children[1].fillColor = "#555";
+            this.children.stop_btn.children[1].fitBounds(this.children.stop_btn.children[0].bounds);
+            this.children.stop_btn.children[1].fillColor = "#555";
+            this.children.faster_btn.children[1].fitBounds(this.children.faster_btn.children[0].bounds);
+            this.children.faster_btn.children[1].fillColor = "orange";
+            this.children.slower_btn.children[1].fitBounds(this.children.slower_btn.children[0].bounds);
+            this.children.slower_btn.children[1].fillColor = "lime";
+            // positioning numberboxes...
+            this.children.playcounter.fitBounds(this.children.playcounterbox.bounds);
+            this.children.speedcounter.fitBounds(this.children.speedcounterbox.bounds);
+            this.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
+            //socket io event handling..
+            var that = this;
+            this._socket.on('sound', function(msg) {
+              if (msg.group == 'beach' && msg.name == that._key) {
+                if (msg.action == 'start') {
+                  that._players.push(that._player.start()._source); // start playbacks and collect their '_source's..
+                  that._playcount++;
+                  that.children.playcounter.content = '' + that._playcount;
+                  that.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
+                } else if (msg.action == 'stop') {
+                  if (that._players.length > 0) {
+                    (that._players.shift()).stop();
+                    that._playcount--;
+                    that.children.playcounter.content = '' + that._playcount;
+                  }
+                  if (that._players.length == 0) {
+                    that.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
+                  }
+                } else if (msg.action == 'faster') {
+                  if (that._players.length > 0) {
+                    that._players[that._players.length - 1].playbackRate.value += 0.2;
+                    that.children.speedcounter.content = Number.parseFloat(that._players[that._players.length - 1].playbackRate.value).toFixed(1);
+                  }
+                } else if (msg.action == 'slower') {
+                  if (that._players.length > 0) {
+                    var val = that._players[that._players.length - 1].playbackRate.value;
+                    if (val > 0.2) {
+                      that._players[that._players.length - 1].playbackRate.value -= 0.2;
+                    }
+                    that.children.speedcounter.content = Number.parseFloat(that._players[that._players.length - 1].playbackRate.value).toFixed(1);
+                  }
+                }
+              }
+            });
+          }
+        });
+        c._init();
+        //label
+        new PointText({
+          point: c.firstChild.bounds.topLeft + [0, -5],
+          content: Object.keys(beach_sounds)[idx],
+          fontSize: vssw * 0.55,
+          fontWeight: 'bold',
+          fillColor: 'white'
+        });
+      }
+    }
 
     //home
     changeScreen(1);
