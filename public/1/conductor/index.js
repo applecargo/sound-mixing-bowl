@@ -20,8 +20,8 @@ $(document).ready(function() {
     SVGImport_size1('./imgs/arrow-circle-left.svg'),
     SVGImport_size1('./imgs/hand-point-right-regular.svg'),
     SVGImport_size1('./imgs/listen-icon.svg'),
-    SVGImport_size1('./imgs/iconmonstr-plus-4.svg'),
-    SVGImport_size1('./imgs/iconmonstr-minus-4.svg'),
+    SVGImport_size1('./imgs/plus.svg'),
+    SVGImport_size1('./imgs/minus.svg'),
     SVGImport_size1('./imgs/faster.svg'),
     SVGImport_size1('./imgs/slower.svg'),
     //clap
@@ -324,7 +324,7 @@ $(document).ready(function() {
 
     //screen #3 - beach page #1
     changeScreen(3);
-    new Path.Rectangle([0, 0], vs).fillColor = '#333';
+    new Path.Rectangle([0, 0], vs).fillColor = '#555';
 
     //title - text
     new PointText({
@@ -346,14 +346,16 @@ $(document).ready(function() {
           children: [
             //play button
             new Path.Rectangle({
+              name: 'play_btn',
               point: [vssw * 0.8, row * vssw * 1.4 + vssw * 3.5],
               radius: vssw * 0.4,
               size: [vssw * 1.5, vssw * 0.7],
-              fillColor: new Color({
+              strokeColor: new Color({
                 hue: getRandom(20, 60),
                 saturation: 1,
                 brightness: 1
               }),
+              strokeWidth : vssw * 0.03,
               onMouseDown: function(event) {
                 var par = this.parent;
                 par._players.push(par._player.start()._source); // start playbacks and collect their '_source's..
@@ -384,14 +386,16 @@ $(document).ready(function() {
             }),
             //stop button
             new Path.Rectangle({
+              name: 'stop_btn',
               point: [vssw * 2.9, row * vssw * 1.4 + vssw * 3.5],
               radius: vssw * 0.4,
               size: [vssw * 1.6, vssw * 0.7],
-              fillColor: new Color({
-                hue: getRandom(120, 250),
+              strokeColor: new Color({
+                hue: getRandom(120, 180),
                 saturation: 1,
                 brightness: 1
               }),
+              strokeWidth : vssw * 0.03,
               onMouseDown: function() {
                 var par = this.parent;
                 if (par._players.length > 0) {
@@ -457,7 +461,7 @@ $(document).ready(function() {
               radius: vssw * 0.4,
               size: [vssw * 1.6, vssw * 0.7],
               strokeColor: new Color({
-                hue: getRandom(120, 250),
+                hue: getRandom(120, 180),
                 saturation: 1,
                 brightness: 1
               }),
@@ -485,12 +489,20 @@ $(document).ready(function() {
           _init: function() {
             this._player.loop = true;
             this._player.retrigger = true;
-            var ff = faster.clone().addTo(project);
-            ff.fitBounds(this.children.faster_btn.bounds);
-            ff.fillColor = "orange";
-            var ss = slower.clone().addTo(project);
-            ss.fitBounds(this.children.slower_btn.bounds);
-            ss.fillColor = "lime";
+            // iconifying...
+            var fast = faster.clone().addTo(project);
+            fast.fitBounds(this.children.faster_btn.bounds);
+            fast.fillColor = "orange";
+            var slow = slower.clone().addTo(project);
+            slow.fitBounds(this.children.slower_btn.bounds);
+            slow.fillColor = "lime";
+            var player_increase = plus.clone().addTo(project);
+            player_increase.fitBounds(this.children.play_btn.bounds);
+            player_increase.fillColor = "cyan";
+            var player_decrease = minus.clone().addTo(project);
+            player_decrease.fitBounds(this.children.stop_btn.bounds);
+            player_decrease.fillColor = "teal";
+            // positioning numberboxes...
             this.children.playcounter.fitBounds(this.children.playcounterbox.bounds);
             this.children.speedcounter.fitBounds(this.children.speedcounterbox.bounds);
             this.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
@@ -541,7 +553,7 @@ $(document).ready(function() {
 
     //screen #4 - beach page #2
     changeScreen(4);
-    new Path.Rectangle([0, 0], vs).fillColor = '#333';
+    new Path.Rectangle([0, 0], vs).fillColor = '#555';
 
     //title - text
     new PointText({
@@ -563,14 +575,16 @@ $(document).ready(function() {
           children: [
             //play button
             new Path.Rectangle({
+              name: 'play_btn',
               point: [vssw * 0.8, row * vssw * 1.4 + vssw * 3.5],
               radius: vssw * 0.4,
               size: [vssw * 1.5, vssw * 0.7],
-              fillColor: new Color({
+              strokeColor: new Color({
                 hue: getRandom(20, 60),
                 saturation: 1,
                 brightness: 1
               }),
+              strokeWidth : vssw * 0.03,
               onMouseDown: function(event) {
                 var par = this.parent;
                 par._players.push(par._player.start()._source); // start playbacks and collect their '_source's..
@@ -601,14 +615,16 @@ $(document).ready(function() {
             }),
             //stop button
             new Path.Rectangle({
+              name: 'stop_btn',
               point: [vssw * 2.9, row * vssw * 1.4 + vssw * 3.5],
               radius: vssw * 0.4,
               size: [vssw * 1.6, vssw * 0.7],
-              fillColor: new Color({
-                hue: getRandom(120, 250),
+              strokeColor: new Color({
+                hue: getRandom(120, 180),
                 saturation: 1,
                 brightness: 1
               }),
+              strokeWidth : vssw * 0.03,
               onMouseDown: function() {
                 var par = this.parent;
                 if (par._players.length > 0) {
@@ -629,14 +645,16 @@ $(document).ready(function() {
             }),
             //faster button
             new Path.Rectangle({
+              name: 'faster_btn',
               point: [vssw * 5.0, row * vssw * 1.4 + vssw * 3.5],
               radius: vssw * 0.4,
               size: [vssw * 1.6, vssw * 0.7],
-              fillColor: new Color({
+              strokeColor: new Color({
                 hue: getRandom(20, 60),
                 saturation: 1,
                 brightness: 1
               }),
+              strokeWidth : vssw * 0.03,
               onMouseDown: function() {
                 var par = this.parent;
                 if (par._players.length > 0) {
@@ -667,14 +685,16 @@ $(document).ready(function() {
             }),
             //slower button
             new Path.Rectangle({
+              name: 'slower_btn',
               point: [vssw * 7.8, row * vssw * 1.4 + vssw * 3.5],
               radius: vssw * 0.4,
               size: [vssw * 1.6, vssw * 0.7],
-              fillColor: new Color({
-                hue: getRandom(120, 250),
+              strokeColor: new Color({
+                hue: getRandom(120, 180),
                 saturation: 1,
                 brightness: 1
               }),
+              strokeWidth : vssw * 0.03,
               onMouseDown: function() {
                 var par = this.parent;
                 if (par._players.length > 0) {
@@ -698,6 +718,20 @@ $(document).ready(function() {
           _init: function() {
             this._player.loop = true;
             this._player.retrigger = true;
+            // iconifying...
+            var fast = faster.clone().addTo(project);
+            fast.fitBounds(this.children.faster_btn.bounds);
+            fast.fillColor = "orange";
+            var slow = slower.clone().addTo(project);
+            slow.fitBounds(this.children.slower_btn.bounds);
+            slow.fillColor = "lime";
+            var player_increase = plus.clone().addTo(project);
+            player_increase.fitBounds(this.children.play_btn.bounds);
+            player_increase.fillColor = "cyan";
+            var player_decrease = minus.clone().addTo(project);
+            player_decrease.fitBounds(this.children.stop_btn.bounds);
+            player_decrease.fillColor = "teal";
+            // positioning numberboxes...
             this.children.playcounter.fitBounds(this.children.playcounterbox.bounds);
             this.children.speedcounter.fitBounds(this.children.speedcounterbox.bounds);
             this.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
