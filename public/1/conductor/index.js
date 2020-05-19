@@ -350,12 +350,11 @@ $(document).ready(function() {
               point: [vssw * 0.8, row * vssw * 1.4 + vssw * 3.5],
               radius: vssw * 0.4,
               size: [vssw * 1.5, vssw * 0.7],
-              strokeColor: new Color({
+              fillColor: new Color({
                 hue: getRandom(20, 60),
                 saturation: 1,
                 brightness: 1
               }),
-              strokeWidth : vssw * 0.03,
               onMouseDown: function(event) {
                 var par = this.parent;
                 par._players.push(par._player.start()._source); // start playbacks and collect their '_source's..
@@ -390,12 +389,11 @@ $(document).ready(function() {
               point: [vssw * 2.9, row * vssw * 1.4 + vssw * 3.5],
               radius: vssw * 0.4,
               size: [vssw * 1.6, vssw * 0.7],
-              strokeColor: new Color({
+              fillColor: new Color({
                 hue: getRandom(120, 180),
                 saturation: 1,
                 brightness: 1
               }),
-              strokeWidth : vssw * 0.03,
               onMouseDown: function() {
                 var par = this.parent;
                 if (par._players.length > 0) {
@@ -498,10 +496,10 @@ $(document).ready(function() {
             slow.fillColor = "lime";
             var player_increase = plus.clone().addTo(project);
             player_increase.fitBounds(this.children.play_btn.bounds);
-            player_increase.fillColor = "cyan";
+            player_increase.fillColor = "#555";
             var player_decrease = minus.clone().addTo(project);
             player_decrease.fitBounds(this.children.stop_btn.bounds);
-            player_decrease.fillColor = "teal";
+            player_decrease.fillColor = "#555";
             // positioning numberboxes...
             this.children.playcounter.fitBounds(this.children.playcounterbox.bounds);
             this.children.speedcounter.fitBounds(this.children.speedcounterbox.bounds);
@@ -579,12 +577,11 @@ $(document).ready(function() {
               point: [vssw * 0.8, row * vssw * 1.4 + vssw * 3.5],
               radius: vssw * 0.4,
               size: [vssw * 1.5, vssw * 0.7],
-              strokeColor: new Color({
+              fillColor: new Color({
                 hue: getRandom(20, 60),
                 saturation: 1,
                 brightness: 1
               }),
-              strokeWidth : vssw * 0.03,
               onMouseDown: function(event) {
                 var par = this.parent;
                 par._players.push(par._player.start()._source); // start playbacks and collect their '_source's..
@@ -619,12 +616,11 @@ $(document).ready(function() {
               point: [vssw * 2.9, row * vssw * 1.4 + vssw * 3.5],
               radius: vssw * 0.4,
               size: [vssw * 1.6, vssw * 0.7],
-              strokeColor: new Color({
+              fillColor: new Color({
                 hue: getRandom(120, 180),
                 saturation: 1,
                 brightness: 1
               }),
-              strokeWidth : vssw * 0.03,
               onMouseDown: function() {
                 var par = this.parent;
                 if (par._players.length > 0) {
@@ -727,10 +723,10 @@ $(document).ready(function() {
             slow.fillColor = "lime";
             var player_increase = plus.clone().addTo(project);
             player_increase.fitBounds(this.children.play_btn.bounds);
-            player_increase.fillColor = "cyan";
+            player_increase.fillColor = "#555";
             var player_decrease = minus.clone().addTo(project);
             player_decrease.fitBounds(this.children.stop_btn.bounds);
-            player_decrease.fillColor = "teal";
+            player_decrease.fillColor = "#555";
             // positioning numberboxes...
             this.children.playcounter.fitBounds(this.children.playcounterbox.bounds);
             this.children.speedcounter.fitBounds(this.children.speedcounterbox.bounds);
