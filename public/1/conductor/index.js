@@ -542,7 +542,7 @@ $(document).ready(function() {
         new PointText({
           point: c.firstChild.bounds.topLeft + [0, -5],
           content: Object.keys(beach_sounds)[idx],
-          fontSize: vssw * 0.35,
+          fontSize: vssw * 0.55,
           fontWeight: 'bold',
           fillColor: 'white'
         });
@@ -769,7 +769,7 @@ $(document).ready(function() {
         new PointText({
           point: c.firstChild.bounds.topLeft + [0, -5],
           content: Object.keys(beach_sounds)[idx],
-          fontSize: vssw * 0.35,
+          fontSize: vssw * 0.55,
           fontWeight: 'bold',
           fillColor: 'white'
         });
