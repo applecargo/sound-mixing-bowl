@@ -65,7 +65,7 @@ io.on('connection', function(socket) {
   //entry log.
   console.log('someone connected.');
 
-  //on 'sound' --> relay the message to everybody INCLUDING sender
+  //on 'sound'
   // var soundactive = false;
   socket.on('sound', function(sound) {
 
@@ -76,6 +76,17 @@ io.on('connection', function(socket) {
     console.log('sound.name :' + sound.name);
     console.log('sound.action :' + sound.action);
     console.log('sound.group :' + sound.group);
+  });
+
+  //on 'pan'
+  socket.on('pan', function(pan) {
+
+    //relay the message to everybody EXCEPT the sender
+    socket.broadcast.emit('pan', pan);
+
+    //DEBUG
+    console.log('pan.width :' + pan.width);
+    console.log('pan.speed :' + pan.speed);
   });
 
   //on 'clap' --> relay the message to everybody INCLUDING sender
