@@ -59,20 +59,20 @@ $(document).ready(function() {
     //beach list
     //NOTE: beware! same key is not allowed!! every keys should have different name!!
     var beach_sounds = {
-      '2011_2011' : imports[10],
-      '2011_벨' : imports[11],
-      '2011_숲' : imports[12],
-      '2011_바람' : imports[13],
-      '2011_헤비레인' : imports[14],
-      '고요6' : imports[15],
-      '고요7' : imports[16],
-      '검은산_뚜루' : imports[17],
-      '검은산_다급' : imports[18],
-      '검은산_부엉' : imports[19],
-      '검은산_불안' : imports[20],
-      '검은산_쏟아짐' : imports[21],
-      '고요13' : imports[22],
-      '고요14' : imports[23],
+      '2011_2011': imports[10],
+      '2011_벨': imports[11],
+      '2011_숲': imports[12],
+      '2011_바람': imports[13],
+      '2011_헤비레인': imports[14],
+      '고요6': imports[15],
+      '_소리의_퍼짐______소리의_움직임_1': imports[16],
+      '검은산_뚜루': imports[17],
+      '검은산_다급': imports[18],
+      '검은산_부엉': imports[19],
+      '검은산_불안': imports[20],
+      '검은산_쏟아짐': imports[21],
+      '고요13': imports[22],
+      '_소리의_퍼짐______소리의_움직임_2': imports[23],
     };
     //NOTE: beware! same key is not allowed!! every keys should have different name!!
     var beach_players = {
@@ -82,14 +82,14 @@ $(document).ready(function() {
       '2011_바람': [],
       '2011_헤비레인': [],
       '고요6': [],
-      '고요7': [],
+      '_소리의_퍼짐______소리의_움직임_1': [],
       '검은산_뚜루': [],
       '검은산_다급': [],
       '검은산_부엉': [],
       '검은산_불안': [],
       '검은산_쏟아짐': [],
       '고요13': [],
-      '고요14': [],
+      '_소리의_퍼짐______소리의_움직임_2': [],
     };
 
     //screen changer
@@ -322,6 +322,15 @@ $(document).ready(function() {
       }
     });
 
+    //global panning variable
+    //NOTE: this DOES NOT sync between web-clients! <-- TBD, yet NOT-IMPLEMENTED !
+    var pan_width_pool = [1000, 2000, 3000, 4000, 8000, 80000];
+    var pan_speed_pool = [0, 10, 30, 50, 80, 200, 400, 1200];
+    var cur_pan_width_idx = pan_width_pool.length - 1;
+    var cur_pan_speed_idx = 0;
+    var cur_pan_width = 0;
+    var cur_pan_speed = 0;
+
     //screen #3 - beach page #1
     changeScreen(3);
     new Path.Rectangle([0, 0], vs).fillColor = '#555';
@@ -362,16 +371,31 @@ $(document).ready(function() {
               ],
               onMouseDown: function(event) {
                 var par = this.parent;
-                par._players.push(par._player.start()._source); // start playbacks and collect their '_source's..
-                par._playcount++;
-                par.children.playcounter.content = '' + par._playcount;
-                par.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
-                //
-                par._socket.emit('sound', {
-                  name: par._key,
-                  action: 'start',
-                  group: 'beach'
-                });
+                //NOTE: this DOES NOT sync between web-clients! <-- TBD, yet NOT-IMPLEMENTED !
+                if (par._key == '_소리의_퍼짐______소리의_움직임_1' || par._key == '_소리의_퍼짐______소리의_움직임_2') {
+                  //pan_width: (+)
+                  if (cur_pan_width_idx < (pan_width_pool.length - 1)) {
+                    cur_pan_width_idx++;
+                  }
+                  cur_pan_width = pan_width_pool[cur_pan_width_idx];
+                  par._socket.emit('pan', {
+                    width: cur_pan_width,
+                    speed: cur_pan_speed
+                  });
+                  par.children.playcounter.content = '' + (cur_pan_width_idx + 1);
+                  par.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
+                } else {
+                  par._players.push(par._player.start()._source); // start playbacks and collect their '_source's..
+                  par._playcount++;
+                  par.children.playcounter.content = '' + par._playcount;
+                  par.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
+                  //
+                  par._socket.emit('sound', {
+                    name: par._key,
+                    action: 'start',
+                    group: 'beach'
+                  });
+                }
               }
             }),
             //playcounterbox
@@ -406,20 +430,35 @@ $(document).ready(function() {
               ],
               onMouseDown: function() {
                 var par = this.parent;
-                if (par._players.length > 0) {
-                  (par._players.shift()).stop();
-                  par._playcount--;
-                  par.children.playcounter.content = '' + par._playcount;
-                }
-                if (par._players.length == 0) {
+                //NOTE: this DOES NOT sync between web-clients! <-- TBD, yet NOT-IMPLEMENTED !
+                if (par._key == '_소리의_퍼짐______소리의_움직임_1' || par._key == '_소리의_퍼짐______소리의_움직임_2') {
+                  //pan_width : (-)
+                  if (cur_pan_width_idx > 0) {
+                    cur_pan_width_idx--;
+                  }
+                  cur_pan_width = pan_width_pool[cur_pan_width_idx];
+                  par._socket.emit('pan', {
+                    width: cur_pan_width,
+                    speed: cur_pan_speed
+                  });
+                  par.children.playcounter.content = '' + (cur_pan_width_idx + 1);
                   par.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
+                } else {
+                  if (par._players.length > 0) {
+                    (par._players.shift()).stop();
+                    par._playcount--;
+                    par.children.playcounter.content = '' + par._playcount;
+                  }
+                  if (par._players.length == 0) {
+                    par.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
+                  }
+                  //
+                  par._socket.emit('sound', {
+                    name: par._key,
+                    action: 'stop',
+                    group: 'beach'
+                  });
                 }
-                //
-                par._socket.emit('sound', {
-                  name: par._key,
-                  action: 'stop',
-                  group: 'beach'
-                });
               }
             }),
             //faster button
@@ -435,23 +474,37 @@ $(document).ready(function() {
                     saturation: 1,
                     brightness: 1
                   }),
-                  strokeWidth : vssw * 0.03,
+                  strokeWidth: vssw * 0.03,
                   fillColor: "#555"
                 }),
                 faster.clone()
               ],
               onMouseDown: function() {
                 var par = this.parent;
-                if (par._players.length > 0) {
-                  par._players[par._players.length - 1].playbackRate.value += 0.2;
-                  par.children.speedcounter.content = Number.parseFloat(par._players[par._players.length - 1].playbackRate.value).toFixed(1);
+                //NOTE: this DOES NOT sync between web-clients! <-- TBD, yet NOT-IMPLEMENTED !
+                if (par._key == '_소리의_퍼짐______소리의_움직임_1' || par._key == '_소리의_퍼짐______소리의_움직임_2') {
+                  //pan_speed: (+)
+                  if (cur_pan_speed_idx < (pan_speed_pool.length - 1)) {
+                    cur_pan_speed_idx++;
+                  }
+                  cur_pan_speed = pan_speed_pool[cur_pan_speed_idx];
+                  par._socket.emit('pan', {
+                    width: cur_pan_width,
+                    speed: cur_pan_speed
+                  });
+                  par.children.speedcounter.content = Number.parseFloat(cur_pan_speed).toFixed(1);
+                } else {
+                  if (par._players.length > 0) {
+                    par._players[par._players.length - 1].playbackRate.value += 0.2;
+                    par.children.speedcounter.content = Number.parseFloat(par._players[par._players.length - 1].playbackRate.value).toFixed(1);
+                  }
+                  //
+                  par._socket.emit('sound', {
+                    name: par._key,
+                    action: 'faster',
+                    group: 'beach'
+                  });
                 }
-                //
-                par._socket.emit('sound', {
-                  name: par._key,
-                  action: 'faster',
-                  group: 'beach'
-                });
               }
             }),
             //speedcounterbox
@@ -481,26 +534,40 @@ $(document).ready(function() {
                     saturation: 1,
                     brightness: 1
                   }),
-                  strokeWidth : vssw * 0.03,
+                  strokeWidth: vssw * 0.03,
                   fillColor: "#555"
                 }),
                 slower.clone()
               ],
               onMouseDown: function() {
                 var par = this.parent;
-                if (par._players.length > 0) {
-                  var val = par._players[par._players.length - 1].playbackRate.value;
-                  if (val > 0.2) {
-                    par._players[par._players.length - 1].playbackRate.value = val - 0.2;
+                //NOTE: this DOES NOT sync between web-clients! <-- TBD, yet NOT-IMPLEMENTED !
+                if (par._key == '_소리의_퍼짐______소리의_움직임_1' || par._key == '_소리의_퍼짐______소리의_움직임_2') {
+                  //pan_speed: (-)
+                  if (cur_pan_speed_idx > 0) {
+                    cur_pan_speed_idx--;
                   }
-                  par.children.speedcounter.content = Number.parseFloat(par._players[par._players.length - 1].playbackRate.value).toFixed(1);
+                  cur_pan_speed = pan_speed_pool[cur_pan_speed_idx];
+                  par._socket.emit('pan', {
+                    width: cur_pan_width,
+                    speed: cur_pan_speed
+                  });
+                  par.children.speedcounter.content = Number.parseFloat(cur_pan_speed).toFixed(1);
+                } else {
+                  if (par._players.length > 0) {
+                    var val = par._players[par._players.length - 1].playbackRate.value;
+                    if (val > 0.2) {
+                      par._players[par._players.length - 1].playbackRate.value = val - 0.2;
+                    }
+                    par.children.speedcounter.content = Number.parseFloat(par._players[par._players.length - 1].playbackRate.value).toFixed(1);
+                  }
+                  //
+                  par._socket.emit('sound', {
+                    name: par._key,
+                    action: 'slower',
+                    group: 'beach'
+                  });
                 }
-                //
-                par._socket.emit('sound', {
-                  name: par._key,
-                  action: 'slower',
-                  group: 'beach'
-                });
               }
             })
           ],
@@ -613,16 +680,31 @@ $(document).ready(function() {
               ],
               onMouseDown: function(event) {
                 var par = this.parent;
-                par._players.push(par._player.start()._source); // start playbacks and collect their '_source's..
-                par._playcount++;
-                par.children.playcounter.content = '' + par._playcount;
-                par.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
-                //
-                par._socket.emit('sound', {
-                  name: par._key,
-                  action: 'start',
-                  group: 'beach'
-                });
+                //NOTE: this DOES NOT sync between web-clients! <-- TBD, yet NOT-IMPLEMENTED !
+                if (par._key == '_소리의_퍼짐______소리의_움직임_1' || par._key == '_소리의_퍼짐______소리의_움직임_2') {
+                  //pan_width: (+)
+                  if (cur_pan_width_idx < (pan_width_pool.length - 1)) {
+                    cur_pan_width_idx++;
+                  }
+                  cur_pan_width = pan_width_pool[cur_pan_width_idx];
+                  par._socket.emit('pan', {
+                    width: cur_pan_width,
+                    speed: cur_pan_speed
+                  });
+                  par.children.playcounter.content = '' + (cur_pan_width_idx + 1);
+                  par.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
+                } else {
+                  par._players.push(par._player.start()._source); // start playbacks and collect their '_source's..
+                  par._playcount++;
+                  par.children.playcounter.content = '' + par._playcount;
+                  par.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
+                  //
+                  par._socket.emit('sound', {
+                    name: par._key,
+                    action: 'start',
+                    group: 'beach'
+                  });
+                }
               }
             }),
             //playcounterbox
@@ -657,20 +739,35 @@ $(document).ready(function() {
               ],
               onMouseDown: function() {
                 var par = this.parent;
-                if (par._players.length > 0) {
-                  (par._players.shift()).stop();
-                  par._playcount--;
-                  par.children.playcounter.content = '' + par._playcount;
-                }
-                if (par._players.length == 0) {
+                //NOTE: this DOES NOT sync between web-clients! <-- TBD, yet NOT-IMPLEMENTED !
+                if (par._key == '_소리의_퍼짐______소리의_움직임_1' || par._key == '_소리의_퍼짐______소리의_움직임_2') {
+                  //pan_width : (-)
+                  if (cur_pan_width_idx > 0) {
+                    cur_pan_width_idx--;
+                  }
+                  cur_pan_width = pan_width_pool[cur_pan_width_idx];
+                  par._socket.emit('pan', {
+                    width: cur_pan_width,
+                    speed: cur_pan_speed
+                  });
+                  par.children.playcounter.content = '' + (cur_pan_width_idx + 1);
                   par.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
+                } else {
+                  if (par._players.length > 0) {
+                    (par._players.shift()).stop();
+                    par._playcount--;
+                    par.children.playcounter.content = '' + par._playcount;
+                  }
+                  if (par._players.length == 0) {
+                    par.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
+                  }
+                  //
+                  par._socket.emit('sound', {
+                    name: par._key,
+                    action: 'stop',
+                    group: 'beach'
+                  });
                 }
-                //
-                par._socket.emit('sound', {
-                  name: par._key,
-                  action: 'stop',
-                  group: 'beach'
-                });
               }
             }),
             //faster button
@@ -686,23 +783,37 @@ $(document).ready(function() {
                     saturation: 1,
                     brightness: 1
                   }),
-                  strokeWidth : vssw * 0.03,
+                  strokeWidth: vssw * 0.03,
                   fillColor: "#555"
                 }),
                 faster.clone()
               ],
               onMouseDown: function() {
                 var par = this.parent;
-                if (par._players.length > 0) {
-                  par._players[par._players.length - 1].playbackRate.value += 0.2;
-                  par.children.speedcounter.content = Number.parseFloat(par._players[par._players.length - 1].playbackRate.value).toFixed(1);
+                //NOTE: this DOES NOT sync between web-clients! <-- TBD, yet NOT-IMPLEMENTED !
+                if (par._key == '_소리의_퍼짐______소리의_움직임_1' || par._key == '_소리의_퍼짐______소리의_움직임_2') {
+                  //pan_speed: (+)
+                  if (cur_pan_speed_idx < (pan_speed_pool.length - 1)) {
+                    cur_pan_speed_idx++;
+                  }
+                  cur_pan_speed = pan_speed_pool[cur_pan_speed_idx];
+                  par._socket.emit('pan', {
+                    width: cur_pan_width,
+                    speed: cur_pan_speed
+                  });
+                  par.children.speedcounter.content = Number.parseFloat(cur_pan_speed).toFixed(1);
+                } else {
+                  if (par._players.length > 0) {
+                    par._players[par._players.length - 1].playbackRate.value += 0.2;
+                    par.children.speedcounter.content = Number.parseFloat(par._players[par._players.length - 1].playbackRate.value).toFixed(1);
+                  }
+                  //
+                  par._socket.emit('sound', {
+                    name: par._key,
+                    action: 'faster',
+                    group: 'beach'
+                  });
                 }
-                //
-                par._socket.emit('sound', {
-                  name: par._key,
-                  action: 'faster',
-                  group: 'beach'
-                });
               }
             }),
             //speedcounterbox
@@ -732,26 +843,40 @@ $(document).ready(function() {
                     saturation: 1,
                     brightness: 1
                   }),
-                  strokeWidth : vssw * 0.03,
+                  strokeWidth: vssw * 0.03,
                   fillColor: "#555"
                 }),
                 slower.clone()
               ],
               onMouseDown: function() {
                 var par = this.parent;
-                if (par._players.length > 0) {
-                  var val = par._players[par._players.length - 1].playbackRate.value;
-                  if (val > 0.2) {
-                    par._players[par._players.length - 1].playbackRate.value = val - 0.2;
+                //NOTE: this DOES NOT sync between web-clients! <-- TBD, yet NOT-IMPLEMENTED !
+                if (par._key == '_소리의_퍼짐______소리의_움직임_1' || par._key == '_소리의_퍼짐______소리의_움직임_2') {
+                  //pan_speed: (-)
+                  if (cur_pan_speed_idx > 0) {
+                    cur_pan_speed_idx--;
                   }
-                  par.children.speedcounter.content = Number.parseFloat(par._players[par._players.length - 1].playbackRate.value).toFixed(1);
+                  cur_pan_speed = pan_speed_pool[cur_pan_speed_idx];
+                  par._socket.emit('pan', {
+                    width: cur_pan_width,
+                    speed: cur_pan_speed
+                  });
+                  par.children.speedcounter.content = Number.parseFloat(cur_pan_speed).toFixed(1);
+                } else {
+                  if (par._players.length > 0) {
+                    var val = par._players[par._players.length - 1].playbackRate.value;
+                    if (val > 0.2) {
+                      par._players[par._players.length - 1].playbackRate.value = val - 0.2;
+                    }
+                    par.children.speedcounter.content = Number.parseFloat(par._players[par._players.length - 1].playbackRate.value).toFixed(1);
+                  }
+                  //
+                  par._socket.emit('sound', {
+                    name: par._key,
+                    action: 'slower',
+                    group: 'beach'
+                  });
                 }
-                //
-                par._socket.emit('sound', {
-                  name: par._key,
-                  action: 'slower',
-                  group: 'beach'
-                });
               }
             })
           ],
