@@ -490,7 +490,7 @@ $(document).ready(function() {
                     width: cur_pan_width,
                     speed: cur_pan_speed
                   });
-                  par.children.speedcounter.content = '' + (cur_pan_speed_idx + 1);
+                  par.children.speedcounter.content = '' + cur_pan_speed_idx;
                 } else {
                   if (par._players.length > 0) {
                     par._players[par._players.length - 1].playbackRate.value += 0.2;
@@ -550,7 +550,7 @@ $(document).ready(function() {
                     width: cur_pan_width,
                     speed: cur_pan_speed
                   });
-                  par.children.speedcounter.content = '' + (cur_pan_speed_idx + 1);
+                  par.children.speedcounter.content = '' + cur_pan_speed_idx;
                 } else {
                   if (par._players.length > 0) {
                     var val = par._players[par._players.length - 1].playbackRate.value;
@@ -797,7 +797,7 @@ $(document).ready(function() {
                     width: cur_pan_width,
                     speed: cur_pan_speed
                   });
-                  par.children.speedcounter.content = '' + (cur_pan_speed_idx + 1);
+                  par.children.speedcounter.content = '' + cur_pan_speed_idx;
                 } else {
                   if (par._players.length > 0) {
                     par._players[par._players.length - 1].playbackRate.value += 0.2;
@@ -857,7 +857,7 @@ $(document).ready(function() {
                     width: cur_pan_width,
                     speed: cur_pan_speed
                   });
-                  par.children.speedcounter.content = '' + (cur_pan_speed_idx + 1);
+                  par.children.speedcounter.content = '' + cur_pan_speed_idx;
                 } else {
                   if (par._players.length > 0) {
                     var val = par._players[par._players.length - 1].playbackRate.value;
