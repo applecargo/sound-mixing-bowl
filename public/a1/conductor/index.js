@@ -186,7 +186,7 @@ $(document).ready(function() {
       strokeColor: '#FFE40A',
       dashArray: [vssw * 0.05, vssw * 0.05],
       onFrame: function(event) {
-        this.rotate(0.2);
+        // this.rotate(0.2);
       }
     });
     netstat.fillColor.alpha = 0;
