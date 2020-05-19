@@ -20,8 +20,10 @@ $(document).ready(function() {
     SVGImport_size1('./imgs/arrow-circle-left.svg'),
     SVGImport_size1('./imgs/hand-point-right-regular.svg'),
     SVGImport_size1('./imgs/listen-icon.svg'),
-    SVGImport_size1('./imgs/iconmonstr-plus-4.svg'),
-    SVGImport_size1('./imgs/iconmonstr-minus-4.svg'),
+    SVGImport_size1('./imgs/plus.svg'),
+    SVGImport_size1('./imgs/minus.svg'),
+    SVGImport_size1('./imgs/faster.svg'),
+    SVGImport_size1('./imgs/slower.svg'),
     //clap
     AudioImport_p5("./audio/clap@2/" + ("0" + getRandomInt(1, 2)).slice(-2) + ".mp3"),
     //beach_sounds page 1 ==> 7
@@ -50,25 +52,27 @@ $(document).ready(function() {
     var iconsound = imports[4];
     var plus = imports[5];
     var minus = imports[6];
+    var faster = imports[7];
+    var slower = imports[8];
     //clap
-    var clap = imports[7];
+    var clap = imports[9];
     //beach list
     //NOTE: beware! same key is not allowed!! every keys should have different name!!
     var beach_sounds = {
-      '2011_2011' : imports[8],
-      '2011_벨' : imports[9],
-      '2011_숲' : imports[10],
-      '2011_바람' : imports[11],
-      '2011_헤비레인' : imports[12],
-      '고요6' : imports[13],
-      '고요7' : imports[14],
-      '검은산_뚜루' : imports[15],
-      '검은산_다급' : imports[16],
-      '검은산_부엉' : imports[17],
-      '검은산_불안' : imports[18],
-      '검은산_쏟아짐' : imports[19],
-      '고요13' : imports[20],
-      '고요14' : imports[21],
+      '2011_2011' : imports[10],
+      '2011_벨' : imports[11],
+      '2011_숲' : imports[12],
+      '2011_바람' : imports[13],
+      '2011_헤비레인' : imports[14],
+      '고요6' : imports[15],
+      '고요7' : imports[16],
+      '검은산_뚜루' : imports[17],
+      '검은산_다급' : imports[18],
+      '검은산_부엉' : imports[19],
+      '검은산_불안' : imports[20],
+      '검은산_쏟아짐' : imports[21],
+      '고요13' : imports[22],
+      '고요14' : imports[23],
     };
     //NOTE: beware! same key is not allowed!! every keys should have different name!!
     var beach_players = {
@@ -177,12 +181,12 @@ $(document).ready(function() {
     var netstat = new Path.Circle({
       center: view.bounds.topRight + [-vssw / 2, +vssw / 2],
       radius: vssw / 4,
-      fillColor: 'hotpink',
-      strokeWidth: 2,
-      strokeColor: 'gray',
-      dashArray: [4, 4],
+      fillColor: '#51D0FD',
+      strokeWidth: vssw * 0.03,
+      strokeColor: '#FFE40A',
+      dashArray: [vssw * 0.05, vssw * 0.05],
       onFrame: function(event) {
-        this.rotate(1);
+        this.rotate(0.2);
       }
     });
     netstat.fillColor.alpha = 0;
@@ -204,7 +208,7 @@ $(document).ready(function() {
     aprev.scale(vssw * 1.5);
     aprev.position = [0, 0]; //reset position, before relative positioning !!
     aprev.translate([vssw, vssw * 1.8]);
-    aprev.fillColor = 'pink';
+    aprev.fillColor = '#FFE40A';
     aprev._socket = socket;
     aprev._isactive = false;
     aprev._activate = function() {
@@ -226,7 +230,7 @@ $(document).ready(function() {
     anext.scale(vssw * 1.5);
     anext.position = [0, 0]; //reset position, before relative positioning !!
     anext.translate([vssw * 9, vssw * 1.8]);
-    anext.fillColor = 'pink';
+    anext.fillColor = '#FFE40A';
     anext._socket = socket;
     anext._isactive = false;
     anext._activate = function() {
@@ -244,16 +248,27 @@ $(document).ready(function() {
     };
 
     //title background
-    new Path.Rectangle({
+    var titlebox = new Path.Rectangle({
       point: [vssw * 2, vssw * 1],
       size: [vssw * 6, vssw * 1.5],
       fillColor: 'white',
-      radius: 30,
-    }).opacity = 0.3;
+      radius: vssw * 0.8,
+      opacity: 0.3,
+    });
 
     //screen #1 - 'home'
     changeScreen(1);
     new Path.Rectangle([0, 0], vs).fillColor = '#999';
+
+    //title - text
+    new PointText({
+      point: titlebox.bounds.center,
+      content: '  사운드-랩 § soundLab  ',
+      fillColor: 'white',
+      fontFamily: 'AppleGothic, Sans-serif',
+      fontWeight: 'bold',
+      fontSize: '3em',
+    }).fitBounds(titlebox.bounds);
 
     //hello, screen.
     phonehand.addTo(project);
@@ -263,28 +278,38 @@ $(document).ready(function() {
 
     //screen #2 - check
     changeScreen(2);
-    new Path.Rectangle([0, 0], vs).fillColor = '#393';
+    new Path.Rectangle([0, 0], vs).fillColor = '#05C183';
+
+    //title - text
+    new PointText({
+      point: [vssw * 2, vssw * 1],
+      content: '          연결 확인          ',
+      fillColor: 'white',
+      fontFamily: 'AppleGothic, Sans-serif',
+      fontWeight: 'bold',
+      fontSize: '3em'
+    }).fitBounds(titlebox.bounds);
 
     //TODO: info text.
     new PointText({
       content: "네트워크 테스트!",
       point: view.center + [-vssw * 3, -vssw * 2],
       fontWeight: 'bold',
-      fontSize: '2em',
+      fontSize: vssw * 1.0,
       fillColor: 'gold'
     });
     new PointText({
       content: "사운드 테스트!",
       point: view.center + [-vssw * 3, vssw * 0],
       fontWeight: 'bold',
-      fontSize: '2em',
+      fontSize: vssw * 1.0,
       fillColor: 'pink'
     });
     new PointText({
       content: "동그라미 터치!",
       point: view.center + [-vssw * 3, vssw * 2],
       fontWeight: 'bold',
-      fontSize: '2em',
+      fontSize: vssw * 1.0,
       fillColor: 'red'
     });
     new Path.Circle({
@@ -299,7 +324,17 @@ $(document).ready(function() {
 
     //screen #3 - beach page #1
     changeScreen(3);
-    new Path.Rectangle([0, 0], vs).fillColor = '#333';
+    new Path.Rectangle([0, 0], vs).fillColor = '#555';
+
+    //title - text
+    new PointText({
+      point: [vssw * 2, vssw * 1],
+      content: '           믹스 #1           ',
+      fillColor: 'white',
+      fontFamily: 'AppleGothic, Sans-serif',
+      fontWeight: 'bold',
+      fontSize: '3em'
+    }).fitBounds(titlebox.bounds);
 
     //
     for (var row = 0; row < 7; row++) {
@@ -311,9 +346,10 @@ $(document).ready(function() {
           children: [
             //play button
             new Path.Rectangle({
+              name: 'play_btn',
               point: [vssw * 0.8, row * vssw * 1.4 + vssw * 3.5],
               radius: vssw * 0.4,
-              size: [vssw * 1.6, vssw * 0.7],
+              size: [vssw * 1.5, vssw * 0.7],
               fillColor: new Color({
                 hue: getRandom(20, 60),
                 saturation: 1,
@@ -324,6 +360,7 @@ $(document).ready(function() {
                 par._players.push(par._player.start()._source); // start playbacks and collect their '_source's..
                 par._playcount++;
                 par.children.playcounter.content = '' + par._playcount;
+                par.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
                 //
                 par._socket.emit('sound', {
                   name: par._key,
@@ -332,13 +369,28 @@ $(document).ready(function() {
                 });
               }
             }),
+            //playcounterbox
+            new Path.Rectangle({
+              name: 'playcounterbox',
+              point: [vssw * 2.3, row * vssw * 1.4 + vssw * 3.5],
+              size: [vssw * 0.6, vssw * 0.8],
+            }),
+            //playcounter
+            new PointText({
+              name: 'playcounter',
+              content: '' + 0,
+              fillColor: 'white',
+              fontSize: '2em',
+              fontWeight: 'bold'
+            }),
             //stop button
             new Path.Rectangle({
-              point: [vssw * 2.8, row * vssw * 1.4 + vssw * 3.5],
+              name: 'stop_btn',
+              point: [vssw * 2.9, row * vssw * 1.4 + vssw * 3.5],
               radius: vssw * 0.4,
               size: [vssw * 1.6, vssw * 0.7],
               fillColor: new Color({
-                hue: getRandom(120, 250),
+                hue: getRandom(120, 180),
                 saturation: 1,
                 brightness: 1
               }),
@@ -349,6 +401,9 @@ $(document).ready(function() {
                   par._playcount--;
                   par.children.playcounter.content = '' + par._playcount;
                 }
+                if (par._players.length == 0) {
+                  par.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
+                }
                 //
                 par._socket.emit('sound', {
                   name: par._key,
@@ -357,29 +412,23 @@ $(document).ready(function() {
                 });
               }
             }),
-            //playcounter
-            new PointText({
-              name: 'playcounter',
-              content: '' + 0,
-              point: [vssw * 4.8, row * vssw * 1.4 + vssw * 3.5 + vssw * 0.6],
-              fillColor: 'white',
-              fontSize: '2em',
-              fontWeight: 'bold'
-            }),
             //faster button
             new Path.Rectangle({
-              point: [vssw * 5.8, row * vssw * 1.4 + vssw * 3.5],
+              name: 'faster_btn',
+              point: [vssw * 5.0, row * vssw * 1.4 + vssw * 3.5],
               radius: vssw * 0.4,
               size: [vssw * 1.6, vssw * 0.7],
-              fillColor: new Color({
+              strokeColor: new Color({
                 hue: getRandom(20, 60),
                 saturation: 1,
                 brightness: 1
               }),
+              strokeWidth : vssw * 0.03,
               onMouseDown: function() {
                 var par = this.parent;
                 if (par._players.length > 0) {
                   par._players[par._players.length - 1].playbackRate.value += 0.2;
+                  par.children.speedcounter.content = Number.parseFloat(par._players[par._players.length - 1].playbackRate.value).toFixed(1);
                 }
                 //
                 par._socket.emit('sound', {
@@ -389,20 +438,37 @@ $(document).ready(function() {
                 });
               }
             }),
+            //speedcounterbox
+            new Path.Rectangle({
+              name: 'speedcounterbox',
+              point: [vssw * 6.6, row * vssw * 1.4 + vssw * 3.5],
+              size: [vssw * 0.6, vssw * 0.8],
+            }),
+            //speedcounter
+            new PointText({
+              name: 'speedcounter',
+              content: '' + 0,
+              fillColor: 'white',
+              fontSize: '2em',
+              fontWeight: 'bold'
+            }),
             //slower button
             new Path.Rectangle({
+              name: 'slower_btn',
               point: [vssw * 7.8, row * vssw * 1.4 + vssw * 3.5],
               radius: vssw * 0.4,
               size: [vssw * 1.6, vssw * 0.7],
-              fillColor: new Color({
-                hue: getRandom(120, 250),
+              strokeColor: new Color({
+                hue: getRandom(120, 180),
                 saturation: 1,
                 brightness: 1
               }),
+              strokeWidth : vssw * 0.03,
               onMouseDown: function() {
                 var par = this.parent;
                 if (par._players.length > 0) {
                   par._players[par._players.length - 1].playbackRate.value -= 0.2;
+                  par.children.speedcounter.content = Number.parseFloat(par._players[par._players.length - 1].playbackRate.value).toFixed(1);
                 }
                 //
                 par._socket.emit('sound', {
@@ -421,6 +487,23 @@ $(document).ready(function() {
           _init: function() {
             this._player.loop = true;
             this._player.retrigger = true;
+            // iconifying...
+            var fast = faster.clone().addTo(project);
+            fast.fitBounds(this.children.faster_btn.bounds);
+            fast.fillColor = "orange";
+            var slow = slower.clone().addTo(project);
+            slow.fitBounds(this.children.slower_btn.bounds);
+            slow.fillColor = "lime";
+            var player_increase = plus.clone().addTo(project);
+            player_increase.fitBounds(this.children.play_btn.bounds);
+            player_increase.fillColor = "#555";
+            var player_decrease = minus.clone().addTo(project);
+            player_decrease.fitBounds(this.children.stop_btn.bounds);
+            player_decrease.fillColor = "#555";
+            // positioning numberboxes...
+            this.children.playcounter.fitBounds(this.children.playcounterbox.bounds);
+            this.children.speedcounter.fitBounds(this.children.speedcounterbox.bounds);
+            this.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
             //socket io event handling..
             var that = this;
             this._socket.on('sound', function(msg) {
@@ -429,19 +512,25 @@ $(document).ready(function() {
                   that._players.push(that._player.start()._source); // start playbacks and collect their '_source's..
                   that._playcount++;
                   that.children.playcounter.content = '' + that._playcount;
+                  that.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
                 } else if (msg.action == 'stop') {
                   if (that._players.length > 0) {
                     (that._players.shift()).stop();
                     that._playcount--;
                     that.children.playcounter.content = '' + that._playcount;
                   }
+                  if (that._players.length == 0) {
+                    that.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
+                  }
                 } else if (msg.action == 'faster') {
                   if (that._players.length > 0) {
                     that._players[that._players.length - 1].playbackRate.value += 0.2;
+                    that.children.speedcounter.content = Number.parseFloat(that._players[that._players.length - 1].playbackRate.value).toFixed(1);
                   }
                 } else if (msg.action == 'slower') {
                   if (that._players.length > 0) {
                     that._players[that._players.length - 1].playbackRate.value -= 0.2;
+                    that.children.speedcounter.content = Number.parseFloat(that._players[that._players.length - 1].playbackRate.value).toFixed(1);
                   }
                 }
               }
@@ -453,7 +542,7 @@ $(document).ready(function() {
         new PointText({
           point: c.firstChild.bounds.topLeft + [0, -5],
           content: Object.keys(beach_sounds)[idx],
-          fontSize: '1em',
+          fontSize: vssw * 0.55,
           fontWeight: 'bold',
           fillColor: 'white'
         });
@@ -462,7 +551,17 @@ $(document).ready(function() {
 
     //screen #4 - beach page #2
     changeScreen(4);
-    new Path.Rectangle([0, 0], vs).fillColor = '#333';
+    new Path.Rectangle([0, 0], vs).fillColor = '#555';
+
+    //title - text
+    new PointText({
+      point: [vssw * 2, vssw * 1],
+      content: '           믹스 #2           ',
+      fillColor: 'white',
+      fontFamily: 'AppleGothic, Sans-serif',
+      fontWeight: 'bold',
+      fontSize: '3em'
+    }).fitBounds(titlebox.bounds);
 
     //
     for (var row = 0; row < 7; row++) {
@@ -474,9 +573,10 @@ $(document).ready(function() {
           children: [
             //play button
             new Path.Rectangle({
+              name: 'play_btn',
               point: [vssw * 0.8, row * vssw * 1.4 + vssw * 3.5],
               radius: vssw * 0.4,
-              size: [vssw * 1.6, vssw * 0.7],
+              size: [vssw * 1.5, vssw * 0.7],
               fillColor: new Color({
                 hue: getRandom(20, 60),
                 saturation: 1,
@@ -487,6 +587,7 @@ $(document).ready(function() {
                 par._players.push(par._player.start()._source); // start playbacks and collect their '_source's..
                 par._playcount++;
                 par.children.playcounter.content = '' + par._playcount;
+                par.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
                 //
                 par._socket.emit('sound', {
                   name: par._key,
@@ -495,13 +596,28 @@ $(document).ready(function() {
                 });
               }
             }),
+            //playcounterbox
+            new Path.Rectangle({
+              name: 'playcounterbox',
+              point: [vssw * 2.3, row * vssw * 1.4 + vssw * 3.5],
+              size: [vssw * 0.6, vssw * 0.8],
+            }),
+            //playcounter
+            new PointText({
+              name: 'playcounter',
+              content: '' + 0,
+              fillColor: 'white',
+              fontSize: '2em',
+              fontWeight: 'bold'
+            }),
             //stop button
             new Path.Rectangle({
-              point: [vssw * 2.8, row * vssw * 1.4 + vssw * 3.5],
+              name: 'stop_btn',
+              point: [vssw * 2.9, row * vssw * 1.4 + vssw * 3.5],
               radius: vssw * 0.4,
               size: [vssw * 1.6, vssw * 0.7],
               fillColor: new Color({
-                hue: getRandom(120, 250),
+                hue: getRandom(120, 180),
                 saturation: 1,
                 brightness: 1
               }),
@@ -512,6 +628,9 @@ $(document).ready(function() {
                   par._playcount--;
                   par.children.playcounter.content = '' + par._playcount;
                 }
+                if (par._players.length == 0) {
+                  par.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
+                }
                 //
                 par._socket.emit('sound', {
                   name: par._key,
@@ -520,29 +639,23 @@ $(document).ready(function() {
                 });
               }
             }),
-            //playcounter
-            new PointText({
-              name: 'playcounter',
-              content: '' + 0,
-              point: [vssw * 4.8, row * vssw * 1.4 + vssw * 3.5 + vssw * 0.6],
-              fillColor: 'white',
-              fontSize: '2em',
-              fontWeight: 'bold'
-            }),
             //faster button
             new Path.Rectangle({
-              point: [vssw * 5.8, row * vssw * 1.4 + vssw * 3.5],
+              name: 'faster_btn',
+              point: [vssw * 5.0, row * vssw * 1.4 + vssw * 3.5],
               radius: vssw * 0.4,
               size: [vssw * 1.6, vssw * 0.7],
-              fillColor: new Color({
+              strokeColor: new Color({
                 hue: getRandom(20, 60),
                 saturation: 1,
                 brightness: 1
               }),
+              strokeWidth : vssw * 0.03,
               onMouseDown: function() {
                 var par = this.parent;
                 if (par._players.length > 0) {
                   par._players[par._players.length - 1].playbackRate.value += 0.2;
+                  par.children.speedcounter.content = Number.parseFloat(par._players[par._players.length - 1].playbackRate.value).toFixed(1);
                 }
                 //
                 par._socket.emit('sound', {
@@ -552,20 +665,37 @@ $(document).ready(function() {
                 });
               }
             }),
+            //speedcounterbox
+            new Path.Rectangle({
+              name: 'speedcounterbox',
+              point: [vssw * 6.6, row * vssw * 1.4 + vssw * 3.5],
+              size: [vssw * 0.6, vssw * 0.8],
+            }),
+            //speedcounter
+            new PointText({
+              name: 'speedcounter',
+              content: '' + 0,
+              fillColor: 'white',
+              fontSize: '2em',
+              fontWeight: 'bold'
+            }),
             //slower button
             new Path.Rectangle({
+              name: 'slower_btn',
               point: [vssw * 7.8, row * vssw * 1.4 + vssw * 3.5],
               radius: vssw * 0.4,
               size: [vssw * 1.6, vssw * 0.7],
-              fillColor: new Color({
-                hue: getRandom(120, 250),
+              strokeColor: new Color({
+                hue: getRandom(120, 180),
                 saturation: 1,
                 brightness: 1
               }),
+              strokeWidth : vssw * 0.03,
               onMouseDown: function() {
                 var par = this.parent;
                 if (par._players.length > 0) {
                   par._players[par._players.length - 1].playbackRate.value -= 0.2;
+                  par.children.speedcounter.content = Number.parseFloat(par._players[par._players.length - 1].playbackRate.value).toFixed(1);
                 }
                 //
                 par._socket.emit('sound', {
@@ -584,6 +714,23 @@ $(document).ready(function() {
           _init: function() {
             this._player.loop = true;
             this._player.retrigger = true;
+            // iconifying...
+            var fast = faster.clone().addTo(project);
+            fast.fitBounds(this.children.faster_btn.bounds);
+            fast.fillColor = "orange";
+            var slow = slower.clone().addTo(project);
+            slow.fitBounds(this.children.slower_btn.bounds);
+            slow.fillColor = "lime";
+            var player_increase = plus.clone().addTo(project);
+            player_increase.fitBounds(this.children.play_btn.bounds);
+            player_increase.fillColor = "#555";
+            var player_decrease = minus.clone().addTo(project);
+            player_decrease.fitBounds(this.children.stop_btn.bounds);
+            player_decrease.fillColor = "#555";
+            // positioning numberboxes...
+            this.children.playcounter.fitBounds(this.children.playcounterbox.bounds);
+            this.children.speedcounter.fitBounds(this.children.speedcounterbox.bounds);
+            this.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
             //socket io event handling..
             var that = this;
             this._socket.on('sound', function(msg) {
@@ -592,19 +739,25 @@ $(document).ready(function() {
                   that._players.push(that._player.start()._source); // start playbacks and collect their '_source's..
                   that._playcount++;
                   that.children.playcounter.content = '' + that._playcount;
+                  that.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
                 } else if (msg.action == 'stop') {
                   if (that._players.length > 0) {
                     (that._players.shift()).stop();
                     that._playcount--;
                     that.children.playcounter.content = '' + that._playcount;
                   }
+                  if (that._players.length == 0) {
+                    that.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
+                  }
                 } else if (msg.action == 'faster') {
                   if (that._players.length > 0) {
                     that._players[that._players.length - 1].playbackRate.value += 0.2;
+                    that.children.speedcounter.content = Number.parseFloat(that._players[that._players.length - 1].playbackRate.value).toFixed(1);
                   }
                 } else if (msg.action == 'slower') {
                   if (that._players.length > 0) {
                     that._players[that._players.length - 1].playbackRate.value -= 0.2;
+                    that.children.speedcounter.content = Number.parseFloat(that._players[that._players.length - 1].playbackRate.value).toFixed(1);
                   }
                 }
               }
@@ -616,7 +769,7 @@ $(document).ready(function() {
         new PointText({
           point: c.firstChild.bounds.topLeft + [0, -5],
           content: Object.keys(beach_sounds)[idx],
-          fontSize: '1em',
+          fontSize: vssw * 0.55,
           fontWeight: 'bold',
           fillColor: 'white'
         });

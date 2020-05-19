@@ -24,7 +24,7 @@ $(document).ready(function() {
     SVGImport_size1('./imgs/iconmonstr-minus-4.svg'),
     //clap
     AudioImport_p5("./audio/clap@2/" + ("0" + getRandomInt(1, 2)).slice(-2) + ".mp3"),
-    //sounds page 1 ==> 7
+    //beach_sounds page 1 ==> 7
     AudioImport("./audio/2011_2011.mp3"),
     AudioImport("./audio/2011_벨.mp3"),
     AudioImport("./audio/2011_숲.mp3"),
@@ -32,7 +32,7 @@ $(document).ready(function() {
     AudioImport("./audio/2011_헤비레인.mp3"),
     AudioImport("./audio/고요6.mp3"),
     AudioImport("./audio/고요7.mp3"),
-    //sounds page 2 ==> 7
+    //beach_sounds page 2 ==> 7
     AudioImport("./audio/검은산_뚜루.mp3"),
     AudioImport("./audio/검은산_다급.mp3"),
     AudioImport("./audio/검은산_부엉.mp3"),
@@ -193,12 +193,12 @@ $(document).ready(function() {
     var netstat = new Path.Circle({
       center: view.bounds.topRight + [-vssw / 2, +vssw / 2],
       radius: vssw / 4,
-      fillColor: 'hotpink',
-      strokeWidth: 2,
-      strokeColor: 'gray',
-      dashArray: [4, 4],
+      fillColor: '#51D0FD',
+      strokeWidth: vssw * 0.03,
+      strokeColor: '#FFE40A',
+      dashArray: [vssw * 0.05, vssw * 0.05],
       onFrame: function(event) {
-        this.rotate(1);
+        this.rotate(0.2);
       }
     });
     netstat.fillColor.alpha = 0;
@@ -220,7 +220,7 @@ $(document).ready(function() {
     aprev.scale(vssw * 1.5);
     aprev.position = [0, 0]; //reset position, before relative positioning !!
     aprev.translate([vssw, vssw * 1.8]);
-    aprev.fillColor = 'pink';
+    aprev.fillColor = '#FFE40A';
     aprev._socket = socket;
     aprev._isactive = false;
     aprev._activate = function() {
@@ -242,7 +242,7 @@ $(document).ready(function() {
     anext.scale(vssw * 1.5);
     anext.position = [0, 0]; //reset position, before relative positioning !!
     anext.translate([vssw * 9, vssw * 1.8]);
-    anext.fillColor = 'pink';
+    anext.fillColor = '#FFE40A';
     anext._socket = socket;
     anext._isactive = false;
     anext._activate = function() {
@@ -260,16 +260,27 @@ $(document).ready(function() {
     };
 
     //title background
-    new Path.Rectangle({
+    var titlebox = new Path.Rectangle({
       point: [vssw * 2, vssw * 1],
       size: [vssw * 6, vssw * 1.5],
       fillColor: 'white',
-      radius: 30,
-    }).opacity = 0.3;
+      radius: vssw * 0.8,
+      opacity: 0.3,
+    });
 
     //screen #1 - 'home'
     changeScreen(1);
     new Path.Rectangle([0, 0], vs).fillColor = '#999';
+
+    //title - text
+    new PointText({
+      point: titlebox.bounds.center,
+      content: '  사운드-랩 § soundLab  ',
+      fillColor: 'white',
+      fontFamily: 'AppleGothic, Sans-serif',
+      fontWeight: 'bold',
+      fontSize: '3em',
+    }).fitBounds(titlebox.bounds);
 
     //hello, screen.
     phonehand.addTo(project);
@@ -279,28 +290,38 @@ $(document).ready(function() {
 
     //screen #2 - check
     changeScreen(2);
-    new Path.Rectangle([0, 0], vs).fillColor = '#393';
+    new Path.Rectangle([0, 0], vs).fillColor = '#05C183';
+
+    //title - text
+    new PointText({
+      point: [vssw * 2, vssw * 1],
+      content: '          연결 확인          ',
+      fillColor: 'white',
+      fontFamily: 'AppleGothic, Sans-serif',
+      fontWeight: 'bold',
+      fontSize: '3em'
+    }).fitBounds(titlebox.bounds);
 
     //TODO: info text.
     new PointText({
       content: "네트워크 테스트!",
       point: view.center + [-vssw * 3, -vssw * 2],
       fontWeight: 'bold',
-      fontSize: '2em',
+      fontSize: vssw * 1.0,
       fillColor: 'gold'
     });
     new PointText({
       content: "사운드 테스트!",
       point: view.center + [-vssw * 3, vssw * 0],
       fontWeight: 'bold',
-      fontSize: '2em',
+      fontSize: vssw * 1.0,
       fillColor: 'pink'
     });
     new PointText({
       content: "동그라미 터치!",
       point: view.center + [-vssw * 3, vssw * 2],
       fontWeight: 'bold',
-      fontSize: '2em',
+      fontSize: vssw * 1.0,
       fillColor: 'red'
     });
     new Path.Circle({
@@ -316,6 +337,16 @@ $(document).ready(function() {
     //screen #3 - beach page #1
     changeScreen(3);
     new Path.Rectangle([0, 0], vs).fillColor = '#333';
+
+    //title - text
+    new PointText({
+      point: [vssw * 2, vssw * 1],
+      content: '           믹스 #1           ',
+      fillColor: 'white',
+      fontFamily: 'AppleGothic, Sans-serif',
+      fontWeight: 'bold',
+      fontSize: '3em'
+    }).fitBounds(titlebox.bounds);
 
     iconsound.addTo(project);
     //iconsound.scale(vsw / 1.5);
