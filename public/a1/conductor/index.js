@@ -345,16 +345,21 @@ $(document).ready(function() {
         var c = new Group({
           children: [
             //play button
-            new Path.Rectangle({
+            new Group({
               name: 'play_btn',
-              point: [vssw * 0.8, row * vssw * 1.4 + vssw * 3.5],
-              radius: vssw * 0.4,
-              size: [vssw * 1.5, vssw * 0.7],
-              fillColor: new Color({
-                hue: getRandom(20, 60),
-                saturation: 1,
-                brightness: 1
-              }),
+              children: [
+                new Path.Rectangle({
+                  point: [vssw * 0.8, row * vssw * 1.4 + vssw * 3.5],
+                  radius: vssw * 0.4,
+                  size: [vssw * 1.5, vssw * 0.7],
+                  fillColor: new Color({
+                    hue: getRandom(20, 60),
+                    saturation: 1,
+                    brightness: 1
+                  }),
+                }),
+                plus.clone()
+              ],
               onMouseDown: function(event) {
                 var par = this.parent;
                 par._players.push(par._player.start()._source); // start playbacks and collect their '_source's..
@@ -384,16 +389,21 @@ $(document).ready(function() {
               fontWeight: 'bold'
             }),
             //stop button
-            new Path.Rectangle({
+            new Group({
               name: 'stop_btn',
-              point: [vssw * 2.9, row * vssw * 1.4 + vssw * 3.5],
-              radius: vssw * 0.4,
-              size: [vssw * 1.6, vssw * 0.7],
-              fillColor: new Color({
-                hue: getRandom(120, 180),
-                saturation: 1,
-                brightness: 1
-              }),
+              children: [
+                new Path.Rectangle({
+                  point: [vssw * 2.9, row * vssw * 1.4 + vssw * 3.5],
+                  radius: vssw * 0.4,
+                  size: [vssw * 1.6, vssw * 0.7],
+                  fillColor: new Color({
+                    hue: getRandom(120, 180),
+                    saturation: 1,
+                    brightness: 1
+                  }),
+                }),
+                minus.clone()
+              ],
               onMouseDown: function() {
                 var par = this.parent;
                 if (par._players.length > 0) {
@@ -413,17 +423,23 @@ $(document).ready(function() {
               }
             }),
             //faster button
-            new Path.Rectangle({
+            new Group({
               name: 'faster_btn',
-              point: [vssw * 5.0, row * vssw * 1.4 + vssw * 3.5],
-              radius: vssw * 0.4,
-              size: [vssw * 1.6, vssw * 0.7],
-              strokeColor: new Color({
-                hue: getRandom(20, 60),
-                saturation: 1,
-                brightness: 1
-              }),
-              strokeWidth : vssw * 0.03,
+              children: [
+                new Path.Rectangle({
+                  point: [vssw * 5.0, row * vssw * 1.4 + vssw * 3.5],
+                  radius: vssw * 0.4,
+                  size: [vssw * 1.6, vssw * 0.7],
+                  strokeColor: new Color({
+                    hue: getRandom(20, 60),
+                    saturation: 1,
+                    brightness: 1
+                  }),
+                  strokeWidth : vssw * 0.03,
+                  fillColor: "#555"
+                }),
+                faster.clone()
+              ],
               onMouseDown: function() {
                 var par = this.parent;
                 if (par._players.length > 0) {
@@ -453,21 +469,30 @@ $(document).ready(function() {
               fontWeight: 'bold'
             }),
             //slower button
-            new Path.Rectangle({
+            new Group({
               name: 'slower_btn',
-              point: [vssw * 7.8, row * vssw * 1.4 + vssw * 3.5],
-              radius: vssw * 0.4,
-              size: [vssw * 1.6, vssw * 0.7],
-              strokeColor: new Color({
-                hue: getRandom(120, 180),
-                saturation: 1,
-                brightness: 1
-              }),
-              strokeWidth : vssw * 0.03,
+              children: [
+                new Path.Rectangle({
+                  point: [vssw * 7.8, row * vssw * 1.4 + vssw * 3.5],
+                  radius: vssw * 0.4,
+                  size: [vssw * 1.6, vssw * 0.7],
+                  strokeColor: new Color({
+                    hue: getRandom(120, 180),
+                    saturation: 1,
+                    brightness: 1
+                  }),
+                  strokeWidth : vssw * 0.03,
+                  fillColor: "#555"
+                }),
+                slower.clone()
+              ],
               onMouseDown: function() {
                 var par = this.parent;
                 if (par._players.length > 0) {
-                  par._players[par._players.length - 1].playbackRate.value -= 0.2;
+                  var val = par._players[par._players.length - 1].playbackRate.value;
+                  if (val > 0.2) {
+                    par._players[par._players.length - 1].playbackRate.value = val - 0.2;
+                  }
                   par.children.speedcounter.content = Number.parseFloat(par._players[par._players.length - 1].playbackRate.value).toFixed(1);
                 }
                 //
@@ -487,19 +512,15 @@ $(document).ready(function() {
           _init: function() {
             this._player.loop = true;
             this._player.retrigger = true;
-            // iconifying...
-            var fast = faster.clone().addTo(project);
-            fast.fitBounds(this.children.faster_btn.bounds);
-            fast.fillColor = "orange";
-            var slow = slower.clone().addTo(project);
-            slow.fitBounds(this.children.slower_btn.bounds);
-            slow.fillColor = "lime";
-            var player_increase = plus.clone().addTo(project);
-            player_increase.fitBounds(this.children.play_btn.bounds);
-            player_increase.fillColor = "#555";
-            var player_decrease = minus.clone().addTo(project);
-            player_decrease.fitBounds(this.children.stop_btn.bounds);
-            player_decrease.fillColor = "#555";
+            // set icons
+            this.children.play_btn.children[1].fitBounds(this.children.play_btn.children[0].bounds);
+            this.children.play_btn.children[1].fillColor = "#555";
+            this.children.stop_btn.children[1].fitBounds(this.children.stop_btn.children[0].bounds);
+            this.children.stop_btn.children[1].fillColor = "#555";
+            this.children.faster_btn.children[1].fitBounds(this.children.faster_btn.children[0].bounds);
+            this.children.faster_btn.children[1].fillColor = "orange";
+            this.children.slower_btn.children[1].fitBounds(this.children.slower_btn.children[0].bounds);
+            this.children.slower_btn.children[1].fillColor = "lime";
             // positioning numberboxes...
             this.children.playcounter.fitBounds(this.children.playcounterbox.bounds);
             this.children.speedcounter.fitBounds(this.children.speedcounterbox.bounds);
@@ -529,7 +550,10 @@ $(document).ready(function() {
                   }
                 } else if (msg.action == 'slower') {
                   if (that._players.length > 0) {
-                    that._players[that._players.length - 1].playbackRate.value -= 0.2;
+                    var val = that._players[that._players.length - 1].playbackRate.value;
+                    if (val > 0.2) {
+                      that._players[that._players.length - 1].playbackRate.value -= 0.2;
+                    }
                     that.children.speedcounter.content = Number.parseFloat(that._players[that._players.length - 1].playbackRate.value).toFixed(1);
                   }
                 }
@@ -572,16 +596,21 @@ $(document).ready(function() {
         var c = new Group({
           children: [
             //play button
-            new Path.Rectangle({
+            new Group({
               name: 'play_btn',
-              point: [vssw * 0.8, row * vssw * 1.4 + vssw * 3.5],
-              radius: vssw * 0.4,
-              size: [vssw * 1.5, vssw * 0.7],
-              fillColor: new Color({
-                hue: getRandom(20, 60),
-                saturation: 1,
-                brightness: 1
-              }),
+              children: [
+                new Path.Rectangle({
+                  point: [vssw * 0.8, row * vssw * 1.4 + vssw * 3.5],
+                  radius: vssw * 0.4,
+                  size: [vssw * 1.5, vssw * 0.7],
+                  fillColor: new Color({
+                    hue: getRandom(20, 60),
+                    saturation: 1,
+                    brightness: 1
+                  }),
+                }),
+                plus.clone()
+              ],
               onMouseDown: function(event) {
                 var par = this.parent;
                 par._players.push(par._player.start()._source); // start playbacks and collect their '_source's..
@@ -611,16 +640,21 @@ $(document).ready(function() {
               fontWeight: 'bold'
             }),
             //stop button
-            new Path.Rectangle({
+            new Group({
               name: 'stop_btn',
-              point: [vssw * 2.9, row * vssw * 1.4 + vssw * 3.5],
-              radius: vssw * 0.4,
-              size: [vssw * 1.6, vssw * 0.7],
-              fillColor: new Color({
-                hue: getRandom(120, 180),
-                saturation: 1,
-                brightness: 1
-              }),
+              children: [
+                new Path.Rectangle({
+                  point: [vssw * 2.9, row * vssw * 1.4 + vssw * 3.5],
+                  radius: vssw * 0.4,
+                  size: [vssw * 1.6, vssw * 0.7],
+                  fillColor: new Color({
+                    hue: getRandom(120, 180),
+                    saturation: 1,
+                    brightness: 1
+                  }),
+                }),
+                minus.clone()
+              ],
               onMouseDown: function() {
                 var par = this.parent;
                 if (par._players.length > 0) {
@@ -640,17 +674,23 @@ $(document).ready(function() {
               }
             }),
             //faster button
-            new Path.Rectangle({
+            new Group({
               name: 'faster_btn',
-              point: [vssw * 5.0, row * vssw * 1.4 + vssw * 3.5],
-              radius: vssw * 0.4,
-              size: [vssw * 1.6, vssw * 0.7],
-              strokeColor: new Color({
-                hue: getRandom(20, 60),
-                saturation: 1,
-                brightness: 1
-              }),
-              strokeWidth : vssw * 0.03,
+              children: [
+                new Path.Rectangle({
+                  point: [vssw * 5.0, row * vssw * 1.4 + vssw * 3.5],
+                  radius: vssw * 0.4,
+                  size: [vssw * 1.6, vssw * 0.7],
+                  strokeColor: new Color({
+                    hue: getRandom(20, 60),
+                    saturation: 1,
+                    brightness: 1
+                  }),
+                  strokeWidth : vssw * 0.03,
+                  fillColor: "#555"
+                }),
+                faster.clone()
+              ],
               onMouseDown: function() {
                 var par = this.parent;
                 if (par._players.length > 0) {
@@ -680,21 +720,30 @@ $(document).ready(function() {
               fontWeight: 'bold'
             }),
             //slower button
-            new Path.Rectangle({
+            new Group({
               name: 'slower_btn',
-              point: [vssw * 7.8, row * vssw * 1.4 + vssw * 3.5],
-              radius: vssw * 0.4,
-              size: [vssw * 1.6, vssw * 0.7],
-              strokeColor: new Color({
-                hue: getRandom(120, 180),
-                saturation: 1,
-                brightness: 1
-              }),
-              strokeWidth : vssw * 0.03,
+              children: [
+                new Path.Rectangle({
+                  point: [vssw * 7.8, row * vssw * 1.4 + vssw * 3.5],
+                  radius: vssw * 0.4,
+                  size: [vssw * 1.6, vssw * 0.7],
+                  strokeColor: new Color({
+                    hue: getRandom(120, 180),
+                    saturation: 1,
+                    brightness: 1
+                  }),
+                  strokeWidth : vssw * 0.03,
+                  fillColor: "#555"
+                }),
+                slower.clone()
+              ],
               onMouseDown: function() {
                 var par = this.parent;
                 if (par._players.length > 0) {
-                  par._players[par._players.length - 1].playbackRate.value -= 0.2;
+                  var val = par._players[par._players.length - 1].playbackRate.value;
+                  if (val > 0.2) {
+                    par._players[par._players.length - 1].playbackRate.value = val - 0.2;
+                  }
                   par.children.speedcounter.content = Number.parseFloat(par._players[par._players.length - 1].playbackRate.value).toFixed(1);
                 }
                 //
@@ -714,19 +763,15 @@ $(document).ready(function() {
           _init: function() {
             this._player.loop = true;
             this._player.retrigger = true;
-            // iconifying...
-            var fast = faster.clone().addTo(project);
-            fast.fitBounds(this.children.faster_btn.bounds);
-            fast.fillColor = "orange";
-            var slow = slower.clone().addTo(project);
-            slow.fitBounds(this.children.slower_btn.bounds);
-            slow.fillColor = "lime";
-            var player_increase = plus.clone().addTo(project);
-            player_increase.fitBounds(this.children.play_btn.bounds);
-            player_increase.fillColor = "#555";
-            var player_decrease = minus.clone().addTo(project);
-            player_decrease.fitBounds(this.children.stop_btn.bounds);
-            player_decrease.fillColor = "#555";
+            // set icons
+            this.children.play_btn.children[1].fitBounds(this.children.play_btn.children[0].bounds);
+            this.children.play_btn.children[1].fillColor = "#555";
+            this.children.stop_btn.children[1].fitBounds(this.children.stop_btn.children[0].bounds);
+            this.children.stop_btn.children[1].fillColor = "#555";
+            this.children.faster_btn.children[1].fitBounds(this.children.faster_btn.children[0].bounds);
+            this.children.faster_btn.children[1].fillColor = "orange";
+            this.children.slower_btn.children[1].fitBounds(this.children.slower_btn.children[0].bounds);
+            this.children.slower_btn.children[1].fillColor = "lime";
             // positioning numberboxes...
             this.children.playcounter.fitBounds(this.children.playcounterbox.bounds);
             this.children.speedcounter.fitBounds(this.children.speedcounterbox.bounds);
@@ -756,7 +801,10 @@ $(document).ready(function() {
                   }
                 } else if (msg.action == 'slower') {
                   if (that._players.length > 0) {
-                    that._players[that._players.length - 1].playbackRate.value -= 0.2;
+                    var val = that._players[that._players.length - 1].playbackRate.value;
+                    if (val > 0.2) {
+                      that._players[that._players.length - 1].playbackRate.value -= 0.2;
+                    }
                     that.children.speedcounter.content = Number.parseFloat(that._players[that._players.length - 1].playbackRate.value).toFixed(1);
                   }
                 }
