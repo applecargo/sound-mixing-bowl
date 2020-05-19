@@ -22,6 +22,8 @@ $(document).ready(function() {
     SVGImport_size1('./imgs/listen-icon.svg'),
     SVGImport_size1('./imgs/iconmonstr-plus-4.svg'),
     SVGImport_size1('./imgs/iconmonstr-minus-4.svg'),
+    SVGImport_size1('./imgs/faster.svg'),
+    SVGImport_size1('./imgs/slower.svg'),
     //clap
     AudioImport_p5("./audio/clap@2/" + ("0" + getRandomInt(1, 2)).slice(-2) + ".mp3"),
     //beach_sounds page 1 ==> 7
@@ -50,25 +52,27 @@ $(document).ready(function() {
     var iconsound = imports[4];
     var plus = imports[5];
     var minus = imports[6];
+    var faster = imports[7];
+    var slower = imports[8];
     //clap
-    var clap = imports[7];
+    var clap = imports[9];
     //beach list
     //NOTE: beware! same key is not allowed!! every keys should have different name!!
     var beach_sounds = {
-      '2011_2011' : imports[8],
-      '2011_벨' : imports[9],
-      '2011_숲' : imports[10],
-      '2011_바람' : imports[11],
-      '2011_헤비레인' : imports[12],
-      '고요6' : imports[13],
-      '고요7' : imports[14],
-      '검은산_뚜루' : imports[15],
-      '검은산_다급' : imports[16],
-      '검은산_부엉' : imports[17],
-      '검은산_불안' : imports[18],
-      '검은산_쏟아짐' : imports[19],
-      '고요13' : imports[20],
-      '고요14' : imports[21],
+      '2011_2011' : imports[10],
+      '2011_벨' : imports[11],
+      '2011_숲' : imports[12],
+      '2011_바람' : imports[13],
+      '2011_헤비레인' : imports[14],
+      '고요6' : imports[15],
+      '고요7' : imports[16],
+      '검은산_뚜루' : imports[17],
+      '검은산_다급' : imports[18],
+      '검은산_부엉' : imports[19],
+      '검은산_불안' : imports[20],
+      '검은산_쏟아짐' : imports[21],
+      '고요13' : imports[22],
+      '고요14' : imports[23],
     };
     //NOTE: beware! same key is not allowed!! every keys should have different name!!
     var beach_players = {
@@ -408,14 +412,16 @@ $(document).ready(function() {
             }),
             //faster button
             new Path.Rectangle({
+              name: 'faster_btn',
               point: [vssw * 5.0, row * vssw * 1.4 + vssw * 3.5],
               radius: vssw * 0.4,
               size: [vssw * 1.6, vssw * 0.7],
-              fillColor: new Color({
+              strokeColor: new Color({
                 hue: getRandom(20, 60),
                 saturation: 1,
                 brightness: 1
               }),
+              strokeWidth : vssw * 0.03,
               onMouseDown: function() {
                 var par = this.parent;
                 if (par._players.length > 0) {
@@ -446,14 +452,16 @@ $(document).ready(function() {
             }),
             //slower button
             new Path.Rectangle({
+              name: 'slower_btn',
               point: [vssw * 7.8, row * vssw * 1.4 + vssw * 3.5],
               radius: vssw * 0.4,
               size: [vssw * 1.6, vssw * 0.7],
-              fillColor: new Color({
+              strokeColor: new Color({
                 hue: getRandom(120, 250),
                 saturation: 1,
                 brightness: 1
               }),
+              strokeWidth : vssw * 0.03,
               onMouseDown: function() {
                 var par = this.parent;
                 if (par._players.length > 0) {
@@ -477,6 +485,12 @@ $(document).ready(function() {
           _init: function() {
             this._player.loop = true;
             this._player.retrigger = true;
+            var ff = faster.clone().addTo(project);
+            ff.fitBounds(this.children.faster_btn.bounds);
+            ff.fillColor = "orange";
+            var ss = slower.clone().addTo(project);
+            ss.fitBounds(this.children.slower_btn.bounds);
+            ss.fillColor = "lime";
             this.children.playcounter.fitBounds(this.children.playcounterbox.bounds);
             this.children.speedcounter.fitBounds(this.children.speedcounterbox.bounds);
             this.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
