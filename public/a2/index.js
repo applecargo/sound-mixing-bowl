@@ -174,8 +174,8 @@ $(document).ready(function() {
 
     //networking - socket.io
     //var socket = io('http://192.168.42.20:8080');
-    //var socket = io('http://choir.run:8080');
-    var socket = io('https://choir.run');
+    //var socket = io('http://sound-mix.herokuapp.com:8080');
+    var socket = io('https://sound-mix.herokuapp.com');
 
     //net. connection marker
     var netstat = new Path.Circle({
