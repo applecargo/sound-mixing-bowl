@@ -62,3 +62,7 @@ typings/
 
 #osx
 .DS_Store
+
+#atom
+.tern-project
+.tern-port

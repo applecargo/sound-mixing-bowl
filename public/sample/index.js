@@ -4,18 +4,24 @@
 
 $(document).ready(function() {
 
-  //common metrics
+  //networking - socket.io
+  var socket = io('https://sound-mix.herokuapp.com');
+
+  //metrics related to 'view size'
+  // 'coarse'
   var vs = view.size;
   var vsw = vs.width;
   var vsh = vs.height;
+  // 'fine'
   var vss = view.size / 10;
   var vssw = vss.width;
   var vssh = vss.height;
 
-  //pre-load resources
+  //pre-load resources (images + audios)
   Promise.all([
+
     //imgs
-    RasterImport_size1('./imgs/phonehand.png'),
+    RasterImport_size1('./imgs/logo.png'),
     SVGImport_size1('./imgs/arrow-circle-right.svg'),
     SVGImport_size1('./imgs/arrow-circle-left.svg'),
     SVGImport_size1('./imgs/hand-point-right-regular.svg'),
@@ -24,28 +30,23 @@ $(document).ready(function() {
     SVGImport_size1('./imgs/minus.svg'),
     SVGImport_size1('./imgs/faster.svg'),
     SVGImport_size1('./imgs/slower.svg'),
+
     //clap
     AudioImport_p5("./audio/clap@2/" + ("0" + getRandomInt(1, 2)).slice(-2) + ".mp3"),
-    //beach_sounds page 1 ==> 7
-    AudioImport("./audio/검은산_다급.mp3"),
-    AudioImport("./audio/검은산_뚜루.mp3"),
-    AudioImport("./audio/검은산_부엉.mp3"),
-    AudioImport("./audio/검은산_불안.mp3"),
-    AudioImport("./audio/검은산_쏟아짐.mp3"),
-    AudioImport("./audio/고요6.mp3"),
-    AudioImport("./audio/고요7.mp3"),
-    //beach_sounds page 2 ==> 7
-    AudioImport("./audio/기정_과자봉지소리.mp3"),
-    AudioImport("./audio/기정_라디오.mp3"),
-    AudioImport("./audio/기정_물소리(붓).mp3"),
-    AudioImport("./audio/기정_악기.mp3"),
-    AudioImport("./audio/고요12.mp3"),
-    AudioImport("./audio/고요13.mp3"),
-    AudioImport("./audio/고요14.mp3"),
+
+    //sounds page ==> 7
+    AudioImport("./audio/01.mp3"),
+    AudioImport("./audio/02.mp3"),
+    AudioImport("./audio/03.mp3"),
+    AudioImport("./audio/04.mp3"),
+    AudioImport("./audio/05.mp3"),
+    AudioImport("./audio/06.mp3"),
+    AudioImport("./audio/07.mp3"),
     //
   ]).then(function(imports) {
+
     //imgs
-    var phonehand = imports[0];
+    var logo = imports[0];
     var anext = imports[1];
     var aprev = imports[2];
     var hand = imports[3];
@@ -54,52 +55,40 @@ $(document).ready(function() {
     var minus = imports[6];
     var faster = imports[7];
     var slower = imports[8];
+
     //clap
     var clap = imports[9];
-    //beach list
-    //NOTE: beware! same key is not allowed!! every keys should have different name!!
-    var beach_sounds = {
-      '검은산_다급': imports[10],
-      '검은산_뚜루': imports[11],
-      '검은산_부엉': imports[12],
-      '검은산_불안': imports[13],
-      '검은산_쏟아짐': imports[14],
-      '고요6': imports[15],
-      '_소리의_퍼짐______소리의_움직임_1': imports[16],
-      '기정_과자봉지소리': imports[17],
-      '기정_라디오': imports[18],
-      '기정_물소리(붓)': imports[19],
-      '기정_악기': imports[20],
-      '고요12': imports[21],
-      '고요13': imports[22],
-      '_소리의_퍼짐______소리의_움직임_2': imports[23],
+
+    //audio-files dictionary {key: value}
+    //N.B.: Duplicate keys are not allowed!
+    //      i.e. if '01' appearing twice will be a problem.
+    var sounds = {
+      '01': imports[10],
+      '02': imports[11],
+      '03': imports[12],
+      '04': imports[13],
+      '05': imports[14],
+      '06': imports[15],
+      '07': imports[16],
     };
-    //NOTE: beware! same key is not allowed!! every keys should have different name!!
-    var beach_players = {
-      '검은산_다급': [],
-      '검은산_뚜루': [],
-      '검은산_부엉': [],
-      '검은산_불안': [],
-      '검은산_쏟아짐': [],
-      '고요6': [],
-      '_소리의_퍼짐______소리의_움직임_1': [],
-      '기정_과자봉지소리': [],
-      '기정_라디오': [],
-      '기정_물소리(붓)': [],
-      '기정_악기': [],
-      '고요12': [],
-      '고요13': [],
-      '_소리의_퍼짐______소리의_움직임_2': [],
+    //audio-players' bank
+    var players = {
+      '01': [],
+      '02': [],
+      '03': [],
+      '04': [],
+      '05': [],
+      '06': [],
+      '07': [],
     };
 
     //screen changer
-    var nscreen = 4;
+    var nscreen = 3;
     var screens = [];
     var screen_names = {};
     screen_names['start'] = 1;
     screen_names['check'] = 2;
-    screen_names['beach1'] = 3;
-    screen_names['beach2'] = 4;
+    screen_names['sound'] = 3;
     var curscreen;
     for (var idx = 0; idx < nscreen; idx++) {
       screens.push(new Layer());
@@ -118,12 +107,10 @@ $(document).ready(function() {
         if (idx == page - 1) {
           screens[idx].bringToFront();
           top.bringToFront();
-          $('.objstring').eq(idx).css('z-index', 1);
           //
           screens[idx].activate();
         } else {
           screens[idx].sendToBack();
-          $('.objstring').eq(idx).css('z-index', -1);
         }
       }
       //pagination buttons
@@ -171,11 +158,6 @@ $(document).ready(function() {
 
     //top layer
     var top = new Layer(); // new Layer() will be automatically activated at the moment.
-
-    //networking - socket.io
-    //var socket = io('http://192.168.42.20:8080');
-    //var socket = io('http://sound-mix.herokuapp.com:8080');
-    var socket = io('https://sound-mix.herokuapp.com');
 
     //net. connection marker
     var netstat = new Path.Circle({
@@ -263,7 +245,7 @@ $(document).ready(function() {
     //title - text
     new PointText({
       point: titlebox.bounds.center,
-      content: '  사운드-랩 § soundLab  ',
+      content: '✧*｡٩(ˊᗜˋ*)و✧*｡',
       fillColor: 'white',
       fontFamily: 'AppleGothic, Sans-serif',
       fontWeight: 'bold',
@@ -271,10 +253,10 @@ $(document).ready(function() {
     }).fitBounds(titlebox.bounds);
 
     //hello, screen.
-    phonehand.addTo(project);
-    phonehand.scale(vsw / 1.5);
-    phonehand.position = view.center;
-    //phonehand.position.y -= vssh;
+    logo.addTo(project);
+    logo.scale(vsw / 1.5);
+    logo.position = view.center;
+    //logo.position.y -= vssh;
 
     //screen #2 - check
     changeScreen(2);
@@ -331,7 +313,7 @@ $(document).ready(function() {
     var cur_pan_width = 0;
     var cur_pan_speed = 0;
 
-    //screen #3 - beach page #1
+    //screen #3 - sound page
     changeScreen(3);
     new Path.Rectangle([0, 0], vs).fillColor = '#555';
 
@@ -371,30 +353,16 @@ $(document).ready(function() {
               ],
               onMouseDown: function(event) {
                 var par = this.parent;
-                //NOTE: this DOES NOT sync between web-clients! <-- TBD, yet NOT-IMPLEMENTED !
-                if (par._key == '_소리의_퍼짐______소리의_움직임_1' || par._key == '_소리의_퍼짐______소리의_움직임_2') {
-                  //pan_width: (+)
-                  if (cur_pan_width_idx < (pan_width_pool.length - 1)) {
-                    cur_pan_width_idx++;
-                  }
-                  cur_pan_width = pan_width_pool[cur_pan_width_idx];
-                  par._socket.emit('pan', {
-                    width: cur_pan_width,
-                    speed: cur_pan_speed
-                  });
-                  par.children.playcounter.content = '' + (cur_pan_width_idx + 1);
-                } else {
-                  par._players.push(par._player.start()._source); // start playbacks and collect their '_source's..
-                  par._playcount++;
-                  par.children.playcounter.content = '' + par._playcount;
-                  par.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
-                  //
-                  par._socket.emit('sound', {
-                    name: par._key,
-                    action: 'start',
-                    group: 'beach'
-                  });
-                }
+                par._players.push(par._player.start()._source); // start playbacks and collect their '_source's..
+                par._playcount++;
+                par.children.playcounter.content = '' + par._playcount;
+                par.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
+                //
+                par._socket.emit('sound', {
+                  name: par._key,
+                  action: 'start',
+                  group: 'mix-bowl'
+                });
               }
             }),
             //playcounterbox
@@ -429,34 +397,20 @@ $(document).ready(function() {
               ],
               onMouseDown: function() {
                 var par = this.parent;
-                //NOTE: this DOES NOT sync between web-clients! <-- TBD, yet NOT-IMPLEMENTED !
-                if (par._key == '_소리의_퍼짐______소리의_움직임_1' || par._key == '_소리의_퍼짐______소리의_움직임_2') {
-                  //pan_width : (-)
-                  if (cur_pan_width_idx > 0) {
-                    cur_pan_width_idx--;
-                  }
-                  cur_pan_width = pan_width_pool[cur_pan_width_idx];
-                  par._socket.emit('pan', {
-                    width: cur_pan_width,
-                    speed: cur_pan_speed
-                  });
-                  par.children.playcounter.content = '' + (cur_pan_width_idx + 1);
-                } else {
-                  if (par._players.length > 0) {
-                    (par._players.shift()).stop();
-                    par._playcount--;
-                    par.children.playcounter.content = '' + par._playcount;
-                  }
-                  if (par._players.length == 0) {
-                    par.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
-                  }
-                  //
-                  par._socket.emit('sound', {
-                    name: par._key,
-                    action: 'stop',
-                    group: 'beach'
-                  });
+                if (par._players.length > 0) {
+                  (par._players.shift()).stop();
+                  par._playcount--;
+                  par.children.playcounter.content = '' + par._playcount;
                 }
+                if (par._players.length == 0) {
+                  par.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
+                }
+                //
+                par._socket.emit('sound', {
+                  name: par._key,
+                  action: 'stop',
+                  group: 'mix-bowl'
+                });
               }
             }),
             //faster button
@@ -479,30 +433,16 @@ $(document).ready(function() {
               ],
               onMouseDown: function() {
                 var par = this.parent;
-                //NOTE: this DOES NOT sync between web-clients! <-- TBD, yet NOT-IMPLEMENTED !
-                if (par._key == '_소리의_퍼짐______소리의_움직임_1' || par._key == '_소리의_퍼짐______소리의_움직임_2') {
-                  //pan_speed: (+)
-                  if (cur_pan_speed_idx < (pan_speed_pool.length - 1)) {
-                    cur_pan_speed_idx++;
-                  }
-                  cur_pan_speed = pan_speed_pool[cur_pan_speed_idx];
-                  par._socket.emit('pan', {
-                    width: cur_pan_width,
-                    speed: cur_pan_speed
-                  });
-                  par.children.speedcounter.content = '' + cur_pan_speed_idx;
-                } else {
-                  if (par._players.length > 0) {
-                    par._players[par._players.length - 1].playbackRate.value += 0.2;
-                    par.children.speedcounter.content = Number.parseFloat(par._players[par._players.length - 1].playbackRate.value).toFixed(1);
-                  }
-                  //
-                  par._socket.emit('sound', {
-                    name: par._key,
-                    action: 'faster',
-                    group: 'beach'
-                  });
+                if (par._players.length > 0) {
+                  par._players[par._players.length - 1].playbackRate.value += 0.2;
+                  par.children.speedcounter.content = Number.parseFloat(par._players[par._players.length - 1].playbackRate.value).toFixed(1);
                 }
+                //
+                par._socket.emit('sound', {
+                  name: par._key,
+                  action: 'faster',
+                  group: 'mix-bowl'
+                });
               }
             }),
             //speedcounterbox
@@ -539,40 +479,26 @@ $(document).ready(function() {
               ],
               onMouseDown: function() {
                 var par = this.parent;
-                //NOTE: this DOES NOT sync between web-clients! <-- TBD, yet NOT-IMPLEMENTED !
-                if (par._key == '_소리의_퍼짐______소리의_움직임_1' || par._key == '_소리의_퍼짐______소리의_움직임_2') {
-                  //pan_speed: (-)
-                  if (cur_pan_speed_idx > 0) {
-                    cur_pan_speed_idx--;
+                if (par._players.length > 0) {
+                  var val = par._players[par._players.length - 1].playbackRate.value;
+                  if (val > 0.2) {
+                    par._players[par._players.length - 1].playbackRate.value = val - 0.2;
                   }
-                  cur_pan_speed = pan_speed_pool[cur_pan_speed_idx];
-                  par._socket.emit('pan', {
-                    width: cur_pan_width,
-                    speed: cur_pan_speed
-                  });
-                  par.children.speedcounter.content = '' + cur_pan_speed_idx;
-                } else {
-                  if (par._players.length > 0) {
-                    var val = par._players[par._players.length - 1].playbackRate.value;
-                    if (val > 0.2) {
-                      par._players[par._players.length - 1].playbackRate.value = val - 0.2;
-                    }
-                    par.children.speedcounter.content = Number.parseFloat(par._players[par._players.length - 1].playbackRate.value).toFixed(1);
-                  }
-                  //
-                  par._socket.emit('sound', {
-                    name: par._key,
-                    action: 'slower',
-                    group: 'beach'
-                  });
+                  par.children.speedcounter.content = Number.parseFloat(par._players[par._players.length - 1].playbackRate.value).toFixed(1);
                 }
+                //
+                par._socket.emit('sound', {
+                  name: par._key,
+                  action: 'slower',
+                  group: 'mix-bowl'
+                });
               }
             })
           ],
           _socket: socket,
-          _key: Object.keys(beach_sounds)[idx],
-          _player: beach_sounds[Object.keys(beach_sounds)[idx]],
-          _players: beach_players[Object.keys(beach_players)[idx]],
+          _key: Object.keys(sounds)[idx],
+          _player: sounds[Object.keys(sounds)[idx]],
+          _players: players[Object.keys(players)[idx]],
           _playcount: 0,
           _init: function() {
             this._player.loop = true;
@@ -593,7 +519,7 @@ $(document).ready(function() {
             //socket io event handling..
             var that = this;
             this._socket.on('sound', function(msg) {
-              if (msg.group == 'beach' && msg.name == that._key) {
+              if (msg.group == 'mix-bowl' && msg.name == that._key) {
                 if (msg.action == 'start') {
                   that._players.push(that._player.start()._source); // start playbacks and collect their '_source's..
                   that._playcount++;
@@ -630,314 +556,7 @@ $(document).ready(function() {
         //label
         new PointText({
           point: c.firstChild.bounds.topLeft + [0, -5],
-          content: Object.keys(beach_sounds)[idx],
-          fontSize: vssw * 0.55,
-          fontWeight: 'bold',
-          fillColor: 'white'
-        });
-      }
-    }
-
-    //screen #4 - beach page #2
-    changeScreen(4);
-    new Path.Rectangle([0, 0], vs).fillColor = '#555';
-
-    //title - text
-    new PointText({
-      point: [vssw * 2, vssw * 1],
-      content: '           믹스 #2           ',
-      fillColor: 'white',
-      fontFamily: 'AppleGothic, Sans-serif',
-      fontWeight: 'bold',
-      fontSize: '3em'
-    }).fitBounds(titlebox.bounds);
-
-    //
-    for (var row = 0; row < 7; row++) {
-      for (var col = 0; col < 1; col++) {
-        var idx = row * 1 + col + 7;
-
-        //play/stop/playcount/faster/slower button (networked between groups)
-        var c = new Group({
-          children: [
-            //play button
-            new Group({
-              name: 'play_btn',
-              children: [
-                new Path.Rectangle({
-                  point: [vssw * 0.8, row * vssw * 1.4 + vssw * 3.5],
-                  radius: vssw * 0.4,
-                  size: [vssw * 1.5, vssw * 0.7],
-                  fillColor: new Color({
-                    hue: getRandom(20, 60),
-                    saturation: 1,
-                    brightness: 1
-                  }),
-                }),
-                plus.clone()
-              ],
-              onMouseDown: function(event) {
-                var par = this.parent;
-                //NOTE: this DOES NOT sync between web-clients! <-- TBD, yet NOT-IMPLEMENTED !
-                if (par._key == '_소리의_퍼짐______소리의_움직임_1' || par._key == '_소리의_퍼짐______소리의_움직임_2') {
-                  //pan_width: (+)
-                  if (cur_pan_width_idx < (pan_width_pool.length - 1)) {
-                    cur_pan_width_idx++;
-                  }
-                  cur_pan_width = pan_width_pool[cur_pan_width_idx];
-                  par._socket.emit('pan', {
-                    width: cur_pan_width,
-                    speed: cur_pan_speed
-                  });
-                  par.children.playcounter.content = '' + (cur_pan_width_idx + 1);
-                } else {
-                  par._players.push(par._player.start()._source); // start playbacks and collect their '_source's..
-                  par._playcount++;
-                  par.children.playcounter.content = '' + par._playcount;
-                  par.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
-                  //
-                  par._socket.emit('sound', {
-                    name: par._key,
-                    action: 'start',
-                    group: 'beach'
-                  });
-                }
-              }
-            }),
-            //playcounterbox
-            new Path.Rectangle({
-              name: 'playcounterbox',
-              point: [vssw * 2.3, row * vssw * 1.4 + vssw * 3.5],
-              size: [vssw * 0.6, vssw * 0.8],
-            }),
-            //playcounter
-            new PointText({
-              name: 'playcounter',
-              content: '' + 0,
-              fillColor: 'white',
-              fontSize: '2em',
-              fontWeight: 'bold'
-            }),
-            //stop button
-            new Group({
-              name: 'stop_btn',
-              children: [
-                new Path.Rectangle({
-                  point: [vssw * 2.9, row * vssw * 1.4 + vssw * 3.5],
-                  radius: vssw * 0.4,
-                  size: [vssw * 1.6, vssw * 0.7],
-                  fillColor: new Color({
-                    hue: getRandom(120, 180),
-                    saturation: 1,
-                    brightness: 1
-                  }),
-                }),
-                minus.clone()
-              ],
-              onMouseDown: function() {
-                var par = this.parent;
-                //NOTE: this DOES NOT sync between web-clients! <-- TBD, yet NOT-IMPLEMENTED !
-                if (par._key == '_소리의_퍼짐______소리의_움직임_1' || par._key == '_소리의_퍼짐______소리의_움직임_2') {
-                  //pan_width : (-)
-                  if (cur_pan_width_idx > 0) {
-                    cur_pan_width_idx--;
-                  }
-                  cur_pan_width = pan_width_pool[cur_pan_width_idx];
-                  par._socket.emit('pan', {
-                    width: cur_pan_width,
-                    speed: cur_pan_speed
-                  });
-                  par.children.playcounter.content = '' + (cur_pan_width_idx + 1);
-                } else {
-                  if (par._players.length > 0) {
-                    (par._players.shift()).stop();
-                    par._playcount--;
-                    par.children.playcounter.content = '' + par._playcount;
-                  }
-                  if (par._players.length == 0) {
-                    par.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
-                  }
-                  //
-                  par._socket.emit('sound', {
-                    name: par._key,
-                    action: 'stop',
-                    group: 'beach'
-                  });
-                }
-              }
-            }),
-            //faster button
-            new Group({
-              name: 'faster_btn',
-              children: [
-                new Path.Rectangle({
-                  point: [vssw * 5.0, row * vssw * 1.4 + vssw * 3.5],
-                  radius: vssw * 0.4,
-                  size: [vssw * 1.6, vssw * 0.7],
-                  strokeColor: new Color({
-                    hue: getRandom(20, 60),
-                    saturation: 1,
-                    brightness: 1
-                  }),
-                  strokeWidth: vssw * 0.03,
-                  fillColor: "#555"
-                }),
-                faster.clone()
-              ],
-              onMouseDown: function() {
-                var par = this.parent;
-                //NOTE: this DOES NOT sync between web-clients! <-- TBD, yet NOT-IMPLEMENTED !
-                if (par._key == '_소리의_퍼짐______소리의_움직임_1' || par._key == '_소리의_퍼짐______소리의_움직임_2') {
-                  //pan_speed: (+)
-                  if (cur_pan_speed_idx < (pan_speed_pool.length - 1)) {
-                    cur_pan_speed_idx++;
-                  }
-                  cur_pan_speed = pan_speed_pool[cur_pan_speed_idx];
-                  par._socket.emit('pan', {
-                    width: cur_pan_width,
-                    speed: cur_pan_speed
-                  });
-                  par.children.speedcounter.content = '' + cur_pan_speed_idx;
-                } else {
-                  if (par._players.length > 0) {
-                    par._players[par._players.length - 1].playbackRate.value += 0.2;
-                    par.children.speedcounter.content = Number.parseFloat(par._players[par._players.length - 1].playbackRate.value).toFixed(1);
-                  }
-                  //
-                  par._socket.emit('sound', {
-                    name: par._key,
-                    action: 'faster',
-                    group: 'beach'
-                  });
-                }
-              }
-            }),
-            //speedcounterbox
-            new Path.Rectangle({
-              name: 'speedcounterbox',
-              point: [vssw * 6.6, row * vssw * 1.4 + vssw * 3.5],
-              size: [vssw * 0.6, vssw * 0.8],
-            }),
-            //speedcounter
-            new PointText({
-              name: 'speedcounter',
-              content: '' + 0,
-              fillColor: 'white',
-              fontSize: '2em',
-              fontWeight: 'bold'
-            }),
-            //slower button
-            new Group({
-              name: 'slower_btn',
-              children: [
-                new Path.Rectangle({
-                  point: [vssw * 7.8, row * vssw * 1.4 + vssw * 3.5],
-                  radius: vssw * 0.4,
-                  size: [vssw * 1.6, vssw * 0.7],
-                  strokeColor: new Color({
-                    hue: getRandom(120, 180),
-                    saturation: 1,
-                    brightness: 1
-                  }),
-                  strokeWidth: vssw * 0.03,
-                  fillColor: "#555"
-                }),
-                slower.clone()
-              ],
-              onMouseDown: function() {
-                var par = this.parent;
-                //NOTE: this DOES NOT sync between web-clients! <-- TBD, yet NOT-IMPLEMENTED !
-                if (par._key == '_소리의_퍼짐______소리의_움직임_1' || par._key == '_소리의_퍼짐______소리의_움직임_2') {
-                  //pan_speed: (-)
-                  if (cur_pan_speed_idx > 0) {
-                    cur_pan_speed_idx--;
-                  }
-                  cur_pan_speed = pan_speed_pool[cur_pan_speed_idx];
-                  par._socket.emit('pan', {
-                    width: cur_pan_width,
-                    speed: cur_pan_speed
-                  });
-                  par.children.speedcounter.content = '' + cur_pan_speed_idx;
-                } else {
-                  if (par._players.length > 0) {
-                    var val = par._players[par._players.length - 1].playbackRate.value;
-                    if (val > 0.2) {
-                      par._players[par._players.length - 1].playbackRate.value = val - 0.2;
-                    }
-                    par.children.speedcounter.content = Number.parseFloat(par._players[par._players.length - 1].playbackRate.value).toFixed(1);
-                  }
-                  //
-                  par._socket.emit('sound', {
-                    name: par._key,
-                    action: 'slower',
-                    group: 'beach'
-                  });
-                }
-              }
-            })
-          ],
-          _socket: socket,
-          _key: Object.keys(beach_sounds)[idx],
-          _player: beach_sounds[Object.keys(beach_sounds)[idx]],
-          _players: beach_players[Object.keys(beach_players)[idx]],
-          _playcount: 0,
-          _init: function() {
-            this._player.loop = true;
-            this._player.retrigger = true;
-            // set icons
-            this.children.play_btn.children[1].fitBounds(this.children.play_btn.children[0].bounds);
-            this.children.play_btn.children[1].fillColor = "#555";
-            this.children.stop_btn.children[1].fitBounds(this.children.stop_btn.children[0].bounds);
-            this.children.stop_btn.children[1].fillColor = "#555";
-            this.children.faster_btn.children[1].fitBounds(this.children.faster_btn.children[0].bounds);
-            this.children.faster_btn.children[1].fillColor = "orange";
-            this.children.slower_btn.children[1].fitBounds(this.children.slower_btn.children[0].bounds);
-            this.children.slower_btn.children[1].fillColor = "lime";
-            // positioning numberboxes...
-            this.children.playcounter.fitBounds(this.children.playcounterbox.bounds);
-            this.children.speedcounter.fitBounds(this.children.speedcounterbox.bounds);
-            this.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
-            //socket io event handling..
-            var that = this;
-            this._socket.on('sound', function(msg) {
-              if (msg.group == 'beach' && msg.name == that._key) {
-                if (msg.action == 'start') {
-                  that._players.push(that._player.start()._source); // start playbacks and collect their '_source's..
-                  that._playcount++;
-                  that.children.playcounter.content = '' + that._playcount;
-                  that.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
-                } else if (msg.action == 'stop') {
-                  if (that._players.length > 0) {
-                    (that._players.shift()).stop();
-                    that._playcount--;
-                    that.children.playcounter.content = '' + that._playcount;
-                  }
-                  if (that._players.length == 0) {
-                    that.children.speedcounter.content = Number.parseFloat(1).toFixed(1);
-                  }
-                } else if (msg.action == 'faster') {
-                  if (that._players.length > 0) {
-                    that._players[that._players.length - 1].playbackRate.value += 0.2;
-                    that.children.speedcounter.content = Number.parseFloat(that._players[that._players.length - 1].playbackRate.value).toFixed(1);
-                  }
-                } else if (msg.action == 'slower') {
-                  if (that._players.length > 0) {
-                    var val = that._players[that._players.length - 1].playbackRate.value;
-                    if (val > 0.2) {
-                      that._players[that._players.length - 1].playbackRate.value -= 0.2;
-                    }
-                    that.children.speedcounter.content = Number.parseFloat(that._players[that._players.length - 1].playbackRate.value).toFixed(1);
-                  }
-                }
-              }
-            });
-          }
-        });
-        c._init();
-        //label
-        new PointText({
-          point: c.firstChild.bounds.topLeft + [0, -5],
-          content: Object.keys(beach_sounds)[idx],
+          content: Object.keys(sounds)[idx],
           fontSize: vssw * 0.55,
           fontWeight: 'bold',
           fillColor: 'white'
