@@ -1,3 +1,3 @@
-# scar-mix-server
+#
 
-### forked from sound-walk-server.git
+### forked from https://github.com/applecargo/scar-mix-server.git

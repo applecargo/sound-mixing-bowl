@@ -1,7 +1,7 @@
 {
-  "name": "Start on Heroku: Node.js",
-  "description": "A barebones Node.js app using Express 4",
-  "repository": "https://github.com/heroku/node-js-getting-started",
+  "name": "sound-mixing-bowl",
+  "description": "A collaborative sound-mix Node.js app",
+  "repository": "https://nosignal.hopto.org/gitlab/doohoyi/sound-mixing-bowl",
   "logo": "https://cdn.rawgit.com/heroku/node-js-getting-started/master/public/node.svg",
   "keywords": ["node", "express", "heroku"],
   "image": "heroku/nodejs"
