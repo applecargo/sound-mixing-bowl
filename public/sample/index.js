@@ -4,9 +4,6 @@
 
 $(document).ready(function() {
 
-  //networking - socket.io
-  var socket = io('https://sound-mix.herokuapp.com');
-
   //metrics related to 'view size'
   // 'coarse'
   var vs = view.size;
@@ -82,82 +79,11 @@ $(document).ready(function() {
       '07': [],
     };
 
-    //screen changer
-    var nscreen = 3;
-    var screens = [];
-    var screen_names = {};
-    screen_names['start'] = 1;
-    screen_names['check'] = 2;
-    screen_names['sound'] = 3;
-    var curscreen;
-    for (var idx = 0; idx < nscreen; idx++) {
-      screens.push(new Layer());
-    }
-
-    function changeScreen(page) {
-      //pagination buttons
-      aprev._activate();
-      anext._activate();
-      //
-      if (page < 1) page = 1;
-      if (page > nscreen) page = nscreen;
-      curscreen = page;
-      for (var idx = 0; idx < nscreen; idx++) {
-        //
-        if (idx == page - 1) {
-          screens[idx].bringToFront();
-          top.bringToFront();
-          //
-          screens[idx].activate();
-        } else {
-          screens[idx].sendToBack();
-        }
-      }
-      //pagination buttons
-      if (curscreen == 1) {
-        aprev._deactivate();
-      }
-      if (curscreen == nscreen) {
-        anext._deactivate();
-      }
-    }
-
-    function nextScreen() {
-      if (curscreen + 1 <= nscreen) {
-        curscreen++;
-        changeScreen(curscreen);
-      }
-    }
-
-    function prevScreen() {
-      if (curscreen - 1 > 0) {
-        curscreen--;
-        changeScreen(curscreen);
-      }
-    }
-
-    function changeScreenByName(pagename) {
-      changeScreen(screen_names[pagename]);
-    }
-
-    function getScreenNameNext() {
-      if (curscreen + 1 <= nscreen) {
-        return Object.keys(screen_names)[curscreen + 1 - 1];
-      } else {
-        return Object.keys(screen_names)[curscreen - 1];
-      }
-    }
-
-    function getScreenNamePrev() {
-      if (curscreen - 1 > 0) {
-        return Object.keys(screen_names)[curscreen - 1 - 1];
-      } else {
-        return Object.keys(screen_names)[curscreen - 1];
-      }
-    }
-
     //top layer
     var top = new Layer(); // new Layer() will be automatically activated at the moment.
+
+    //networking - socket.io
+    var socket = io(window.location.protocol + "//" + window.location.host);
 
     //net. connection marker
     var netstat = new Path.Circle({
@@ -185,147 +111,11 @@ $(document).ready(function() {
       });
     });
 
-    //page change - prev. page
-    aprev.addTo(project);
-    aprev.scale(vssw * 1.5);
-    aprev.position = [0, 0]; //reset position, before relative positioning !!
-    aprev.translate([vssw, vssw * 1.8]);
-    aprev.fillColor = '#FFE40A';
-    aprev._socket = socket;
-    aprev._isactive = false;
-    aprev._activate = function() {
-      this._isactive = true;
-      this.opacity = 1;
-    }
-    aprev._deactivate = function() {
-      this._isactive = false;
-      this.opacity = 0.3;
-    }
-    aprev.onClick = function() {
-      if (this._isactive == true) {
-        prevScreen();
-      }
-    };
-
-    //page change - next. page
-    anext.addTo(project);
-    anext.scale(vssw * 1.5);
-    anext.position = [0, 0]; //reset position, before relative positioning !!
-    anext.translate([vssw * 9, vssw * 1.8]);
-    anext.fillColor = '#FFE40A';
-    anext._socket = socket;
-    anext._isactive = false;
-    anext._activate = function() {
-      this._isactive = true;
-      this.opacity = 1;
-    }
-    anext._deactivate = function() {
-      this._isactive = false;
-      this.opacity = 0.3;
-    }
-    anext.onClick = function() {
-      if (this._isactive == true) {
-        nextScreen();
-      }
-    };
-
-    //title background
-    var titlebox = new Path.Rectangle({
-      point: [vssw * 2, vssw * 1],
-      size: [vssw * 6, vssw * 1.5],
-      fillColor: 'white',
-      radius: vssw * 0.8,
-      opacity: 0.3,
-    });
-
     //screen #1 - 'home'
-    changeScreen(1);
-    new Path.Rectangle([0, 0], vs).fillColor = '#999';
 
-    //title - text
-    new PointText({
-      point: titlebox.bounds.center,
-      content: '✧*｡٩(ˊᗜˋ*)و✧*｡',
-      fillColor: 'white',
-      fontFamily: 'AppleGothic, Sans-serif',
-      fontWeight: 'bold',
-      fontSize: '3em',
-    }).fitBounds(titlebox.bounds);
+    //✧*｡٩(ˊᗜˋ*)و✧*｡
 
-    //hello, screen.
-    logo.addTo(project);
-    logo.scale(vsw / 1.5);
-    logo.position = view.center;
-    //logo.position.y -= vssh;
-
-    //screen #2 - check
-    changeScreen(2);
-    new Path.Rectangle([0, 0], vs).fillColor = '#05C183';
-
-    //title - text
-    new PointText({
-      point: [vssw * 2, vssw * 1],
-      content: '          연결 확인          ',
-      fillColor: 'white',
-      fontFamily: 'AppleGothic, Sans-serif',
-      fontWeight: 'bold',
-      fontSize: '3em'
-    }).fitBounds(titlebox.bounds);
-
-    //TODO: info text.
-    new PointText({
-      content: "네트워크 테스트!",
-      point: view.center + [-vssw * 3, -vssw * 2],
-      fontWeight: 'bold',
-      fontSize: vssw * 1.0,
-      fillColor: 'gold'
-    });
-    new PointText({
-      content: "사운드 테스트!",
-      point: view.center + [-vssw * 3, vssw * 0],
-      fontWeight: 'bold',
-      fontSize: vssw * 1.0,
-      fillColor: 'pink'
-    });
-    new PointText({
-      content: "동그라미 터치!",
-      point: view.center + [-vssw * 3, vssw * 2],
-      fontWeight: 'bold',
-      fontSize: vssw * 1.0,
-      fillColor: 'red'
-    });
-    new Path.Circle({
-      center: view.center,
-      radius: vsw / 4,
-      fillColor: 'white',
-      opacity: 0.5,
-      onClick: function() {
-        clap.play();
-      }
-    });
-
-    //global panning variable
-    //NOTE: this DOES NOT sync between web-clients! <-- TBD, yet NOT-IMPLEMENTED !
-    var pan_width_pool = [1000, 2000, 3000, 4000, 8000, 80000];
-    var pan_speed_pool = [0, 10, 30, 50, 80, 200, 400, 1200];
-    var cur_pan_width_idx = pan_width_pool.length - 1;
-    var cur_pan_speed_idx = 0;
-    var cur_pan_width = 0;
-    var cur_pan_speed = 0;
-
-    //screen #3 - sound page
-    changeScreen(3);
-    new Path.Rectangle([0, 0], vs).fillColor = '#555';
-
-    //title - text
-    new PointText({
-      point: [vssw * 2, vssw * 1],
-      content: '           믹스 #1           ',
-      fillColor: 'white',
-      fontFamily: 'AppleGothic, Sans-serif',
-      fontWeight: 'bold',
-      fontSize: '3em'
-    }).fitBounds(titlebox.bounds);
+    new Path.Rectangle([0, 0], vs).fillColor = new Color(1, 0.95, 0.71, 0.5); // buttermilk
 
     //
     for (var row = 0; row < 7; row++) {
@@ -340,7 +130,7 @@ $(document).ready(function() {
               name: 'play_btn',
               children: [
                 new Path.Rectangle({
-                  point: [vssw * 0.8, row * vssw * 1.4 + vssw * 3.5],
+                  point: [vssw * 0.8, row * vssw * 1.4 + vssw * 1.2],
                   radius: vssw * 0.4,
                   size: [vssw * 1.5, vssw * 0.7],
                   fillColor: new Color({
@@ -368,14 +158,14 @@ $(document).ready(function() {
             //playcounterbox
             new Path.Rectangle({
               name: 'playcounterbox',
-              point: [vssw * 2.3, row * vssw * 1.4 + vssw * 3.5],
+              point: [vssw * 2.3, row * vssw * 1.4 + vssw * 1.2],
               size: [vssw * 0.6, vssw * 0.8],
             }),
             //playcounter
             new PointText({
               name: 'playcounter',
               content: '' + 0,
-              fillColor: 'white',
+              fillColor: 'black',
               fontSize: '2em',
               fontWeight: 'bold'
             }),
@@ -384,7 +174,7 @@ $(document).ready(function() {
               name: 'stop_btn',
               children: [
                 new Path.Rectangle({
-                  point: [vssw * 2.9, row * vssw * 1.4 + vssw * 3.5],
+                  point: [vssw * 2.9, row * vssw * 1.4 + vssw * 1.2],
                   radius: vssw * 0.4,
                   size: [vssw * 1.6, vssw * 0.7],
                   fillColor: new Color({
@@ -418,7 +208,7 @@ $(document).ready(function() {
               name: 'faster_btn',
               children: [
                 new Path.Rectangle({
-                  point: [vssw * 5.0, row * vssw * 1.4 + vssw * 3.5],
+                  point: [vssw * 5.0, row * vssw * 1.4 + vssw * 1.2],
                   radius: vssw * 0.4,
                   size: [vssw * 1.6, vssw * 0.7],
                   strokeColor: new Color({
@@ -427,7 +217,7 @@ $(document).ready(function() {
                     brightness: 1
                   }),
                   strokeWidth: vssw * 0.03,
-                  fillColor: "#555"
+                  fillColor: new Color(1, 1, 1, 0.5)
                 }),
                 faster.clone()
               ],
@@ -448,14 +238,14 @@ $(document).ready(function() {
             //speedcounterbox
             new Path.Rectangle({
               name: 'speedcounterbox',
-              point: [vssw * 6.6, row * vssw * 1.4 + vssw * 3.5],
+              point: [vssw * 6.6, row * vssw * 1.4 + vssw * 1.2],
               size: [vssw * 0.6, vssw * 0.8],
             }),
             //speedcounter
             new PointText({
               name: 'speedcounter',
               content: '' + 0,
-              fillColor: 'white',
+              fillColor: 'black',
               fontSize: '2em',
               fontWeight: 'bold'
             }),
@@ -464,7 +254,7 @@ $(document).ready(function() {
               name: 'slower_btn',
               children: [
                 new Path.Rectangle({
-                  point: [vssw * 7.8, row * vssw * 1.4 + vssw * 3.5],
+                  point: [vssw * 7.8, row * vssw * 1.4 + vssw * 1.2],
                   radius: vssw * 0.4,
                   size: [vssw * 1.6, vssw * 0.7],
                   strokeColor: new Color({
@@ -473,7 +263,7 @@ $(document).ready(function() {
                     brightness: 1
                   }),
                   strokeWidth: vssw * 0.03,
-                  fillColor: "#555"
+                  fillColor: new Color(1, 1, 1, 0.5)
                 }),
                 slower.clone()
               ],
@@ -505,9 +295,7 @@ $(document).ready(function() {
             this._player.retrigger = true;
             // set icons
             this.children.play_btn.children[1].fitBounds(this.children.play_btn.children[0].bounds);
-            this.children.play_btn.children[1].fillColor = "#555";
             this.children.stop_btn.children[1].fitBounds(this.children.stop_btn.children[0].bounds);
-            this.children.stop_btn.children[1].fillColor = "#555";
             this.children.faster_btn.children[1].fitBounds(this.children.faster_btn.children[0].bounds);
             this.children.faster_btn.children[1].fillColor = "orange";
             this.children.slower_btn.children[1].fitBounds(this.children.slower_btn.children[0].bounds);
@@ -559,13 +347,10 @@ $(document).ready(function() {
           content: Object.keys(sounds)[idx],
           fontSize: vssw * 0.55,
           fontWeight: 'bold',
-          fillColor: 'white'
+          fillColor: 'black'
         });
       }
     }
-
-    //home
-    changeScreen(1);
 
     //reveal the curtain.
     $('#page-loading').css('z-index', -1);
