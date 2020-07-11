@@ -29,7 +29,7 @@ $(document).ready(function() {
     SVGImport_size1('./imgs/slower.svg'),
 
     //clap
-    AudioImport_p5("./audio/clap@2/" + ("0" + getRandomInt(1, 2)).slice(-2) + ".mp3"),
+    // AudioImport_p5("./audio/clap@2/" + ("0" + getRandomInt(1, 2)).slice(-2) + ".mp3"),
 
     //sounds page ==> 7
     AudioImport("./audio/01.mp3"),
@@ -54,19 +54,19 @@ $(document).ready(function() {
     var slower = imports[8];
 
     //clap
-    var clap = imports[9];
+    // var clap = imports[9];
 
     //audio-files dictionary {key: value}
     //N.B.: Duplicate keys are not allowed!
     //      i.e. if '01' appearing twice will be a problem.
     var sounds = {
-      '01': imports[10],
-      '02': imports[11],
-      '03': imports[12],
-      '04': imports[13],
-      '05': imports[14],
-      '06': imports[15],
-      '07': imports[16],
+      '01': imports[9],
+      '02': imports[10],
+      '03': imports[11],
+      '04': imports[12],
+      '05': imports[13],
+      '06': imports[14],
+      '07': imports[15],
     };
     //audio-players' bank
     var players = {
@@ -357,14 +357,14 @@ $(document).ready(function() {
 
     //network event handlers
 
-    //event: 'sound'
-    socket.on('sound', function(sound) {
-      if (sound.name == 'clap') {
-        if (sound.action == 'start') {
-          clap.start();
-        }
-      }
-    });
+    // //event: 'sound'
+    // socket.on('sound', function(sound) {
+    //   if (sound.name == 'clap') {
+    //     if (sound.action == 'start') {
+    //       clap.start();
+    //     }
+    //   }
+    // });
 
   });
 

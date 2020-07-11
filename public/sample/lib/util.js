@@ -299,13 +299,13 @@ function AudioImport(url) {
   });
 }
 
-function AudioImport_p5(url) {
-  return new Promise(function(resolve, reject) {
-    var audio = new p5.SoundFile(url, function() {
-      resolve(audio);
-    });
-  });
-}
+// function AudioImport_p5(url) {
+//   return new Promise(function(resolve, reject) {
+//     var audio = new p5.SoundFile(url, function() {
+//       resolve(audio);
+//     });
+//   });
+// }
 
 //
 // a unique string generator
